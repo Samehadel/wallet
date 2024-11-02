@@ -23,11 +23,11 @@ spec:
       terminationGracePeriodSeconds: 1
       containers:
         - name: demo-kube-pod
-          image: samehadel/wallet/k8s001-uat-user:1.0.0
+          image: samehadel/wallet-k8s001-uat:user-svc.1.0.0
           args: ["--spring.profiles.active=uat"]
           envFrom:
             - configMapRef:
-                name: "k8s001-uat-user"
+                name: "k8s001-uat-user-svc-config"
           imagePullPolicy: "Always"
           ports:
             - containerPort: 8080
