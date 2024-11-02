@@ -1,5 +1,6 @@
 package com.finance.wallet.user.service;
 
+import com.finance.common.constants.UserStatus;
 import com.finance.common.dto.UserDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.wallet.user.exception.UserServiceError;
@@ -41,5 +42,18 @@ public class UserService {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             exceptionService.throwBadRequestException(UserServiceError.EMAIL_ALREADY_EXISTS);
         }
+    }
+
+    public UserDTO getUserByUsername(final String username) {
+        log.info("Getting user by username: {}", username);
+
+        UserDTO sampleUser = new UserDTO();
+        sampleUser.setUsername(username);;
+        sampleUser.setEmail("sample@mail.com");
+        sampleUser.setStatus(UserStatus.ACTIVE);
+        sampleUser.setLoginTries(0);
+        sampleUser.setLocked(false);
+
+        return sampleUser;
     }
 }

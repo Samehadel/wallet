@@ -3,7 +3,6 @@ package com.finance.wallet.user.service;
 import com.finance.common.exception.ExceptionService;
 import com.finance.wallet.user.exception.UserServiceError;
 
-import java.rmi.ServerException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;

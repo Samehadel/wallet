@@ -30,6 +30,9 @@ public class SecurityConfig {
             )
             .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec
                 .pathMatchers("/actuator/health",
+                    "/v3/api-docs",
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
                     "/actuator/health/**",
                     "/actuator/prometheus",
                     "/unauthenticated",

@@ -10,14 +10,15 @@
     </parent>
 
     <artifactId>user</artifactId>
-    <version>1.0</version>
-    <name>wallet-user</name>
+    <version>1.0.0</version>
+    <name>user</name>
     <packaging>jar</packaging>
 
     <properties>
         <liquibase.version>4.29.0</liquibase.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok.version>1.18.34</lombok.version>
+        <springdoc-openapi.version>2.5.0</springdoc-openapi.version>
     </properties>
 
     <dependencies>

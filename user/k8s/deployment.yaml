@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s001-uat-user-deployment
+  labels:
+    app: k8s001-uat-user-svc-deployment
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 2
+  selector:
+    matchLabels:
+      app: k8s001-uat-user-svc
+  template:
+    metadata:
+      labels:
+        app: k8s001-uat-user-svc
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: demo-kube-pod
+          image: samehadel/wallet/k8s001-uat-user:1.0.0
+          args: ["--spring.profiles.active=uat"]
+          envFrom:
+            - configMapRef:
+                name: "k8s001-uat-user"
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
