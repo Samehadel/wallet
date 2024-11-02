@@ -22,7 +22,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 1
       containers:
-        - name: demo-kube-pod
+        - name: k8s001-uat-user-svc
           image: samehadel/wallet-k8s001-uat:user-svc.1.0.0
           args: ["--spring.profiles.active=uat"]
           envFrom:
