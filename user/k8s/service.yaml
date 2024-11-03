@@ -8,9 +8,11 @@ spec:
   ports:
     - protocol: TCP
       port: 80
+      name: service-port
       targetPort: 8080
       nodePort: 31111
     - protocol: TCP
       port: 1451           # Expose port 1451 for database access
+      name: db-port
       targetPort: 1451      # Forward to 1451 in the pod
   type: NodePort
