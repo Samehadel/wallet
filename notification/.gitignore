@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+compiler.xml
+encodings.xml
+misc.xml
+mvnw.cmd
+maven-wrapper.properties
