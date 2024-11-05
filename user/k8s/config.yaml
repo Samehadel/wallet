@@ -4,6 +4,6 @@ metadata:
   name: "k8s001-uat-user-svc-config"
 data:
   spring.application.name: "k8s001-uat-user"
-  spring.datasource.url: "jdbc:sqlserver://host.docker.internal:1451;database=wallet_user;encrypt=false"
+  spring.datasource.url: "jdbc:sqlserver://127.0.0.1:1451;database=wallet_user;encrypt=false"
   spring.datasource.username: "sitwalletuser"
   spring.datasource.password: "Situsrwallet123!"

@@ -3,46 +3,44 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.finance</groupId>
         <artifactId>finance-parent</artifactId>
         <version>1.0</version>
     </parent>
 
-    <artifactId>user</artifactId>
-    <version>1.0.0</version>
-    <name>user</name>
-    <packaging>jar</packaging>
+    <artifactId>authentication</artifactId>
+    <version>1.0-0</version>
 
     <properties>
-        <liquibase.version>4.29.0</liquibase.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok.version>1.18.34</lombok.version>
-        <springdoc-openapi.version>2.5.0</springdoc-openapi.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-kubernetes-client</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.finance</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
+      <dependency>
+        <groupId>com.finance</groupId>
+        <artifactId>common</artifactId>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.springframework.boot</groupId>
+                  <artifactId>spring-boot-starter-data-jpa</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
 
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -57,17 +55,6 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-snapshots</id>
-            <url>https://repo.spring.io/snapshot</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>spring-milestones</id>
-            <url>https://repo.spring.io/milestone</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <build>
         <plugins>
@@ -107,16 +94,10 @@
             </plugin>
 
             <plugin>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-maven-plugin</artifactId>
-                <version>${liquibase.version}</version>
-            </plugin>
-
-            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.finance.wallet.user.UserApplication</mainClass>
+                    <mainClass>com.finance.authentication.AuthenticationApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

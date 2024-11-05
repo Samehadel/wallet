@@ -25,7 +25,6 @@
         <finance.common.version>1.0</finance.common.version>
         <springdoc-openapi-ui.version>1.7.0</springdoc-openapi-ui.version>
         <jackson-databind.version>2.18.0</jackson-databind.version>
-
     </properties>
 
     <dependencyManagement>

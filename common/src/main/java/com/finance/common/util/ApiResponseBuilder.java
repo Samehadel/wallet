@@ -1,34 +1,45 @@
 package com.finance.common.util;
 
 import com.finance.common.exception.ApplicationException;
+import com.finance.common.exception.ErrorDetails;
 import com.finance.common.model.ApiResponse;
 import com.finance.common.model.StatusEnum;
+
+import java.time.Instant;
+
+import org.springframework.http.ResponseEntity;
 
 public class ApiResponseBuilder {
 
 	public static ApiResponse<Void> buildSuccessResponse() {
-		return buildApiResponse(StatusEnum.SUCCESS, null, null, null);
+		return buildApiResponse(StatusEnum.SUCCESS, null, null);
 	}
 
-	public static <D> ApiResponse<D> buildSuccessResponse(D data) {
-		return buildApiResponse(StatusEnum.SUCCESS, null, null, data);
+	public static <R> ResponseEntity<ApiResponse<R>> buildSuccessResponse(R data) {
+		ApiResponse<R> apiResponse = buildApiResponse(StatusEnum.SUCCESS, null, data);
+
+		return ResponseEntity
+			.ok()
+			.body(apiResponse);
 	}
 
-	public static ApiResponse<Void> buildFailedResponse(String errorCode, String errorMessage) {
-		return buildApiResponse(StatusEnum.FAILED, errorMessage, errorCode, null);
+
+	public static <R> ResponseEntity<ApiResponse<R>> buildFailedResponse(final ApplicationException applicationException) {
+		ApiResponse<R> apiResponse = buildApiResponse(StatusEnum.FAILED, applicationException.getErrorDetails(), null);
+
+		return ResponseEntity
+			.status(applicationException.getStatus())
+			.body(apiResponse);
 	}
 
-	public static ApiResponse<Void> buildFailedResponse(ApplicationException applicationException) {
-		return buildApiResponse(StatusEnum.FAILED, applicationException.getErrorMessage(), applicationException.getApplicationErrorCode(), null);
-	}
+	public static <R> ApiResponse<R> buildApiResponse(final StatusEnum status, final ErrorDetails errorDetails, final R data) {
 
-	public static <D> ApiResponse<D> buildApiResponse(StatusEnum status, String errorMessage, String errorCode, D data) {
-		return ApiResponse.<D>builder()
-				.status(status)
-				.errorCode(errorCode)
-				.errorMessage(errorMessage)
-				.responseBody(data)
-				.build();
+		return ApiResponse.<R>builder()
+			.date(Instant.now())
+			.status(status)
+			.errorCode(errorDetails.errorCode())
+			.errorMessage(errorDetails.errorMessage())
+			.responseBody(data)
+			.build();
 	}
-
 }

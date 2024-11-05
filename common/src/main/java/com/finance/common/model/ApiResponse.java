@@ -9,13 +9,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ApiResponse<R> implements Serializable {
+public class ApiResponse<R> {
+	private Instant date;
 	private R responseBody;
 	private String errorCode;
 	private String errorMessage;

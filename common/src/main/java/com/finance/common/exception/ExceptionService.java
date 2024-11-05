@@ -1,26 +1,31 @@
 package com.finance.common.exception;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ExceptionService {
+    private final MessageSource messageSource;
 
-    public void throwBadRequestException(final ApplicationErrorInterface applicationError, final String... args) {
-        throw new ApplicationBadRequestException(applicationError, args);
+    public BadRequestException throwBadRequestException(final ApplicationError applicationError, final String... args) {
+        ErrorDetails errorDetails = buildError(applicationError, args);
+
+        return new BadRequestException(errorDetails);
     }
 
-    public void throwLogicalException(final ApplicationErrorInterface applicationError, final String... args) {
-        throw new ApplicationLogicalException(applicationError, args);
+    public InternalException throwInternalException(final ApplicationError applicationError, final String... args) {
+        ErrorDetails errorDetails = buildError(applicationError, args);
+
+        return new InternalException(errorDetails);
     }
 
-    public <E extends ApplicationException> E buildException(final ApplicationErrorInterface applicationError, final Class<E> exceptionClass,
-        final String... args) {
-        if (ApplicationBadRequestException.class.equals(exceptionClass)) {
-            throw new ApplicationBadRequestException(applicationError, args);
-        } else if (ApplicationLogicalException.class.equals(exceptionClass)) {
-            throw new ApplicationLogicalException(applicationError, args);
-        } else {
-            throw new IllegalArgumentException("Invalid exception class");
-        }
+    private ErrorDetails buildError(final ApplicationError applicationError, final String[] args) {
+        String errorMessage = messageSource.getMessage(applicationError.getErrorCode(), args, LocaleContextHolder.getLocale());
+
+        return new ErrorDetails(applicationError.getErrorCode(), errorMessage);
     }
 }
