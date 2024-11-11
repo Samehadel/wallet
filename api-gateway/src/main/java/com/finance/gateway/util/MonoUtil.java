@@ -1,6 +1,7 @@
 package com.finance.gateway.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.finance.common.exception.ErrorDetails;
 import com.finance.common.exception.SharedApplicationError;
 import com.finance.common.model.ApiResponse;
 import com.finance.common.model.StatusEnum;
@@ -19,9 +20,9 @@ import reactor.core.publisher.Mono;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MonoUtil {
 
-    public static Mono<Void> writeVoidMono(final SharedApplicationError error, final ServerHttpResponse response) {
-        ApiResponse<Void> apiResponse = ApiResponseBuilder
-            .buildApiResponse(StatusEnum.FAILED, error.getMessage(), error.getCode(), null);
+    public static Mono<Void> writeVoidMono(final ErrorDetails error, final ServerHttpResponse response) {
+        ApiResponse<Void> apiResponse = ApiResponseBuilder.buildApiResponse(StatusEnum.FAILED, error, null);
+
         String json;
         try {
             json = ObjectMapperFactory.getSnakeCaseInstance().writeValueAsString(apiResponse);

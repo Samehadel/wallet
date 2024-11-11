@@ -23,7 +23,6 @@ public class ApiResponseBuilder {
 			.body(apiResponse);
 	}
 
-
 	public static <R> ResponseEntity<ApiResponse<R>> buildFailedResponse(final ApplicationException applicationException) {
 		ApiResponse<R> apiResponse = buildApiResponse(StatusEnum.FAILED, applicationException.getErrorDetails(), null);
 

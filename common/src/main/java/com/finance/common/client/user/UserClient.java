@@ -1,6 +1,6 @@
-package com.finance.common.client;
+package com.finance.common.client.user;
 
-import com.finance.common.client.payload.dto.UserDTO;
+import com.finance.common.client.user.dto.UserDTO;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

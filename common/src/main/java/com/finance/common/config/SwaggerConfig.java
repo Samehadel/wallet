@@ -1,4 +1,4 @@
-package com.finance.common.configuration;
+package com.finance.common.config;
 
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;

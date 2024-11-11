@@ -12,18 +12,18 @@ public class ExceptionService {
     private final MessageSource messageSource;
 
     public BadRequestException throwBadRequestException(final ApplicationError applicationError, final String... args) {
-        ErrorDetails errorDetails = buildError(applicationError, args);
+        ErrorDetails errorDetails = buildErrorDetails(applicationError, args);
 
         return new BadRequestException(errorDetails);
     }
 
     public InternalException throwInternalException(final ApplicationError applicationError, final String... args) {
-        ErrorDetails errorDetails = buildError(applicationError, args);
+        ErrorDetails errorDetails = buildErrorDetails(applicationError, args);
 
         return new InternalException(errorDetails);
     }
 
-    private ErrorDetails buildError(final ApplicationError applicationError, final String[] args) {
+    public ErrorDetails buildErrorDetails(final ApplicationError applicationError, final String[] args) {
         String errorMessage = messageSource.getMessage(applicationError.getErrorCode(), args, LocaleContextHolder.getLocale());
 
         return new ErrorDetails(applicationError.getErrorCode(), errorMessage);

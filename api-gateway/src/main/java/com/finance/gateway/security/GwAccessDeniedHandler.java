@@ -1,5 +1,7 @@
 package com.finance.gateway.security;
 
+import com.finance.common.exception.ErrorDetails;
+import com.finance.common.exception.ExceptionService;
 import com.finance.gateway.util.MonoUtil;
 import com.finance.common.exception.SharedApplicationError;
 
@@ -11,10 +13,14 @@ import org.springframework.security.web.server.authorization.ServerAccessDeniedH
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
+import lombok.RequiredArgsConstructor;
+
 import reactor.core.publisher.Mono;
 
 @Component
+@RequiredArgsConstructor
 public class GwAccessDeniedHandler implements ServerAccessDeniedHandler {
+    private final ExceptionService exceptionService;
 
     @Override
     public Mono<Void> handle(final ServerWebExchange exchange, final AccessDeniedException denied) {
@@ -22,6 +28,7 @@ public class GwAccessDeniedHandler implements ServerAccessDeniedHandler {
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        return MonoUtil.writeVoidMono(SharedApplicationError.UNAUTHORIZED_ERROR, response);
+        ErrorDetails errorDetails = exceptionService.buildErrorDetails(SharedApplicationError.UNAUTHORIZED_ERROR, null);
+        return MonoUtil.writeVoidMono(errorDetails, response);
     }
 }

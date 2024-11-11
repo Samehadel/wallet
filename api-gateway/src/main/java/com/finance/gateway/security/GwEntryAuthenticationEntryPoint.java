@@ -1,5 +1,7 @@
 package com.finance.gateway.security;
 
+import com.finance.common.exception.ErrorDetails;
+import com.finance.common.exception.ExceptionService;
 import com.finance.gateway.util.MonoUtil;
 import com.finance.common.exception.SharedApplicationError;
 
@@ -11,10 +13,14 @@ import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
+import lombok.RequiredArgsConstructor;
+
 import reactor.core.publisher.Mono;
 
 @Component
+@RequiredArgsConstructor
 public class GwEntryAuthenticationEntryPoint implements ServerAuthenticationEntryPoint {
+    private final ExceptionService exceptionService;
 
     @Override
     public Mono<Void> commence(final ServerWebExchange exchange, final AuthenticationException ex) {
@@ -22,6 +28,7 @@ public class GwEntryAuthenticationEntryPoint implements ServerAuthenticationEntr
         response.setStatusCode(HttpStatus.FORBIDDEN);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        return MonoUtil.writeVoidMono(SharedApplicationError.FORBIDDEN_ERROR, response);
+        ErrorDetails errorDetails = exceptionService.buildErrorDetails(SharedApplicationError.FORBIDDEN_ERROR, null);
+        return MonoUtil.writeVoidMono(errorDetails, response);
     }
 }

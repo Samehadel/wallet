@@ -1,6 +1,6 @@
 package com.finance.wallet.user.mapper;
 
-import com.finance.common.client.payload.dto.UserDTO;
+import com.finance.common.client.user.dto.UserDTO;
 import com.finance.common.mapper.GlobalMapper;
 import com.finance.wallet.user.persistence.entity.UserEntity;
 

@@ -1,4 +1,4 @@
-package com.finance.common.client.payload.dto;
+package com.finance.common.client.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
