@@ -1,9 +1,10 @@
-package com.finance.common.dto;
+package com.finance.common.client.payload.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.finance.common.constants.RegexConstants;
 import com.finance.common.constants.UserStatus;
+import com.finance.common.dto.BaseDTO;
 import com.finance.common.service.CharArrayDeserializer;
 
 import jakarta.validation.constraints.NotEmpty;

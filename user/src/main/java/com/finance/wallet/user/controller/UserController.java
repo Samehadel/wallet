@@ -1,8 +1,6 @@
 package com.finance.wallet.user.controller;
 
-import com.finance.common.dto.UserDTO;
-import com.finance.common.model.ApiResponse;
-import com.finance.common.util.ApiResponseBuilder;
+import com.finance.common.client.payload.dto.UserDTO;
 import com.finance.wallet.user.service.UserService;
 
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,7 +1,7 @@
 package com.finance.wallet.user.service;
 
 import com.finance.common.constants.UserStatus;
-import com.finance.common.dto.UserDTO;
+import com.finance.common.client.payload.dto.UserDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.wallet.user.exception.UserServiceError;
 import com.finance.wallet.user.mapper.UserMapper;
