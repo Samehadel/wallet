@@ -1,4 +1,4 @@
-package com.finance.common.client.auth.dto;
+package com.finance.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

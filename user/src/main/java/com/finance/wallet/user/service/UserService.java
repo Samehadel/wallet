@@ -1,11 +1,15 @@
 package com.finance.wallet.user.service;
 
 import com.finance.common.constants.UserStatus;
-import com.finance.common.client.user.dto.UserDTO;
+import com.finance.common.dto.AccessUri;
+import com.finance.common.dto.AuthenticationDTO;
+import com.finance.common.dto.WalletUserDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.wallet.user.exception.UserServiceError;
 import com.finance.wallet.user.mapper.UserMapper;
 import com.finance.wallet.user.persistence.repository.UserRepository;
+
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -21,7 +25,7 @@ public class UserService {
     private final ExceptionService exceptionService;
     private final PasswordEncryptor passwordEncryptor;
 
-    public UserDTO register(final UserDTO userDTO) {
+    public WalletUserDTO register(final WalletUserDTO userDTO) {
         log.info("Registering user");
 
         validateUserNotExists(userDTO);
@@ -34,7 +38,7 @@ public class UserService {
         return userMapper.mapToDTO(userEntity);
     }
 
-    private void validateUserNotExists(final UserDTO userDTO) {
+    private void validateUserNotExists(final WalletUserDTO userDTO) {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             exceptionService.throwBadRequestException(UserServiceError.USERNAME_ALREADY_EXISTS);
         }
@@ -44,16 +48,23 @@ public class UserService {
         }
     }
 
-    public UserDTO getUserByUsername(final String username) {
+    public AuthenticationDTO getAuthenticationByUsername(final java.lang.String username) {
         log.info("Getting user by username: {}", username);
 
-        UserDTO sampleUser = new UserDTO();
-        sampleUser.setUsername(username);;
-        sampleUser.setEmail("sample@mail.com");
-        sampleUser.setStatus(UserStatus.ACTIVE);
-        sampleUser.setLoginTries(0);
-        sampleUser.setLocked(false);
+        WalletUserDTO walletUserDTO = WalletUserDTO.builder()
+            .username(username)
+            .email("sample@example.com")
+            .status(UserStatus.ACTIVE)
+            .build();
 
-        return sampleUser;
+        AccessUri accessUri = AccessUri.builder()
+            .uri("/api/v1/user/username/{username}")
+            .methodType("GET")
+            .build();
+
+        return AuthenticationDTO.builder()
+            .walletUser(walletUserDTO)
+            .accessUris(List.of(accessUri))
+            .build();
     }
 }
