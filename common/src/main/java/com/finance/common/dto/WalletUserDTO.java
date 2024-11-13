@@ -1,7 +1,6 @@
 package com.finance.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -44,12 +43,9 @@ public class WalletUserDTO extends BaseDTO {
     @JsonDeserialize(using = CharArrayDeserializer.class)
     private char[] password;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UserStatus status;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer loginTries;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Boolean locked;
 }
