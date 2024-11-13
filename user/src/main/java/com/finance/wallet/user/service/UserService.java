@@ -11,6 +11,7 @@ import com.finance.wallet.user.persistence.repository.UserRepository;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final ExceptionService exceptionService;
     private final PasswordEncryptor passwordEncryptor;
+
+    @Value("${user.mock.enable:false}")
+    private boolean mockUserEnabled;
 
     public WalletUserDTO register(final WalletUserDTO userDTO) {
         log.info("Registering user");
@@ -51,6 +55,15 @@ public class UserService {
     public AuthenticationDTO getAuthenticationByUsername(final java.lang.String username) {
         log.info("Getting user by username: {}", username);
 
+        if (mockUserEnabled) {
+            return getMockUser(username);
+        }
+
+        exceptionService.throwInternalException(UserServiceError.USER_NOT_FOUND, username);
+        return null;
+    }
+
+    private AuthenticationDTO getMockUser(final String username) {
         WalletUserDTO walletUserDTO = WalletUserDTO.builder()
             .username(username)
             .email("sample@example.com")
@@ -58,7 +71,7 @@ public class UserService {
             .build();
 
         AccessUri accessUri = AccessUri.builder()
-            .uri("/api/v1/user/username/{username}")
+            .uri("user/username/{username}")
             .methodType("GET")
             .build();
 
