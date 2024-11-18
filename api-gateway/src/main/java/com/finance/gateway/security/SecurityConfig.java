@@ -41,8 +41,8 @@ public class SecurityConfig {
                         "/actuator/prometheus",
                         "/unauthenticated",
                         "/oauth2/**",
-                        "/login/**",
-                        "/register/**").permitAll()
+                        "/auth/login/**",
+                        "/user/register/**").permitAll()
                     .anyExchange().access(authorizationManager)
             ).build();
     }

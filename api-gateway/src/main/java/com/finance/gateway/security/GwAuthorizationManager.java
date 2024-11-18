@@ -3,11 +3,10 @@ package com.finance.gateway.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.Payload;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.finance.common.dto.AuthenticationDTO;
 import com.finance.common.constants.CommonHeaders;
-import com.finance.gateway.service.AuthenticationService;
+import com.finance.common.dto.AuthenticationDTO;
 import com.finance.gateway.dto.GwAuthorizationContext;
+import com.finance.gateway.service.AuthenticationService;
 
 import java.util.Optional;
 
@@ -25,9 +24,8 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class GwAuthenticationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
+public class GwAuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
     private final AuthenticationService authenticationService;
-    private final ObjectMapper objectMapper;
 
     @Override
     public Mono<AuthorizationDecision> check(final Mono<Authentication> authentication, final AuthorizationContext object) {

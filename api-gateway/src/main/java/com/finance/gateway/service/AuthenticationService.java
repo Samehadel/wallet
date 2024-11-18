@@ -91,11 +91,11 @@ public class AuthenticationService {
             .toList();
     }
 
-    private GwAuthorizationContext buildAuthenticationContext(final String walletUserJson, boolean authorizationDecision) {
+    private GwAuthorizationContext buildAuthenticationContext(final String walletUserJson, final boolean authorizationDecision) {
         return new GwAuthorizationContext(walletUserJson, new AuthorizationDecision(authorizationDecision));
     }
 
-    public Mono<AuthenticationDTO> getAuthenticationCall(String username) {
+    public Mono<AuthenticationDTO> getAuthenticationCall(final String username) {
         return webClient.get()
             .uri(userSvcUrl, username)
             .retrieve()

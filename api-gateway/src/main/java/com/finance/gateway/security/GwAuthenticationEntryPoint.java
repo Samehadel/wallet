@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class GwEntryAuthenticationEntryPoint implements ServerAuthenticationEntryPoint {
+public class GwAuthenticationEntryPoint implements ServerAuthenticationEntryPoint {
     private final ExceptionService exceptionService;
     private final ObjectMapper objectMapper;
 
