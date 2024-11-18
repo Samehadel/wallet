@@ -1,39 +1,43 @@
-HELP.md
-target/
-!account/.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Global ignore rules for unnecessary files
 
-### STS ###
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.sts4-cache
+.vscode/
+
+# Maven-specific files
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Gradle-specific files (if applicable)
+build/
+.gradle/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+
+# Eclipse-specific files
 .apt_generated
 .classpath
 .factorypath
 .project
 .settings
 .springBeans
-.sts4-cache
 
-### IntelliJ IDEA ###
-.idea/
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
+# NetBeans-specific files
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
-.vscode/
-
-compiler.xml
-encodings.xml
-misc.xml
+# Helper files
+HELP.md
 mvnw.cmd
+mvnw
 maven-wrapper.properties
