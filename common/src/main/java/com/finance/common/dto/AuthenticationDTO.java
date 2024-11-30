@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class AuthenticationDTO {
 
-    private WalletUserDTO walletUser;
+    private UserDTO walletUser;
 
     private List<AccessUri> accessUris;
 }

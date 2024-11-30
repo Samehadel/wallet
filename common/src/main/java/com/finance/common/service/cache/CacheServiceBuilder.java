@@ -19,12 +19,6 @@ public class CacheServiceBuilder {
     private final ExceptionService exceptionService;
 
     public <V extends Cacheable> CacheService<V> buildCacheService(final String cacheName, final Class<V> type) {
-        return new CacheService<>(redisTemplate, objectMapper, cacheName, type, exceptionService);
-    }
-
-    public <V extends Cacheable> CacheService<V> buildCacheService(final String cacheName, final Class<V> type, final int timeToLiveSec) {
-        final CacheService<V> cacheService = new CacheService<>(redisTemplate, objectMapper, cacheName, type, exceptionService);
-        cacheService.setTimeToLiveSec(timeToLiveSec);
-        return cacheService;
+        return new RedisCacheService<>(redisTemplate, objectMapper, cacheName, type, exceptionService);
     }
 }

@@ -1,7 +1,7 @@
 package com.finance.wallet.user.controller;
 
 import com.finance.common.dto.AuthenticationDTO;
-import com.finance.common.dto.WalletUserDTO;
+import com.finance.common.dto.UserDTO;
 import com.finance.wallet.user.service.UserService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public WalletUserDTO register(@RequestBody final WalletUserDTO userDTO) {
+    public UserDTO register(@RequestBody final UserDTO userDTO) {
         return userService.register(userDTO);
     }
 

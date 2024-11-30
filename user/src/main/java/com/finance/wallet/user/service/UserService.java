@@ -3,7 +3,7 @@ package com.finance.wallet.user.service;
 import com.finance.common.constants.UserStatus;
 import com.finance.common.dto.AccessUri;
 import com.finance.common.dto.AuthenticationDTO;
-import com.finance.common.dto.WalletUserDTO;
+import com.finance.common.dto.UserDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.wallet.user.exception.UserServiceError;
 import com.finance.wallet.user.mapper.UserMapper;
@@ -29,7 +29,7 @@ public class UserService {
     @Value("${user.mock.enable:false}")
     private boolean mockUserEnabled;
 
-    public WalletUserDTO register(final WalletUserDTO userDTO) {
+    public UserDTO register(final UserDTO userDTO) {
         log.info("Registering user");
 
         validateUserNotExists(userDTO);
@@ -42,13 +42,13 @@ public class UserService {
         return userMapper.mapToDTO(userEntity);
     }
 
-    private void validateUserNotExists(final WalletUserDTO userDTO) {
+    private void validateUserNotExists(final UserDTO userDTO) {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
-            exceptionService.throwBadRequestException(UserServiceError.USERNAME_ALREADY_EXISTS);
+            throw exceptionService.throwBadRequestException(UserServiceError.USERNAME_ALREADY_EXISTS);
         }
 
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            exceptionService.throwBadRequestException(UserServiceError.EMAIL_ALREADY_EXISTS);
+            throw exceptionService.throwBadRequestException(UserServiceError.EMAIL_ALREADY_EXISTS);
         }
     }
 
@@ -64,7 +64,7 @@ public class UserService {
     }
 
     private AuthenticationDTO getMockUser(final String username) {
-        WalletUserDTO walletUserDTO = WalletUserDTO.builder()
+        UserDTO userDTO = UserDTO.builder()
             .username(username)
             .email("sample@example.com")
             .status(UserStatus.ACTIVE)
@@ -76,7 +76,7 @@ public class UserService {
             .build();
 
         return AuthenticationDTO.builder()
-            .walletUser(walletUserDTO)
+            .walletUser(userDTO)
             .accessUris(List.of(accessUri))
             .build();
     }

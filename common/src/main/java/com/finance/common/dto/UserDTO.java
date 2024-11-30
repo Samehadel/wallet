@@ -26,7 +26,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class WalletUserDTO extends BaseDTO {
+public class UserDTO extends BaseDTO {
 
     private String mobile;
 
@@ -46,6 +46,4 @@ public class WalletUserDTO extends BaseDTO {
     private UserStatus status;
 
     private Integer loginTries;
-
-    private Boolean locked;
 }

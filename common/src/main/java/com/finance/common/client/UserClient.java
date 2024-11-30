@@ -1,7 +1,7 @@
 package com.finance.common.client;
 
 
-import com.finance.common.dto.WalletUserDTO;
+import com.finance.common.dto.UserDTO;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,5 +12,5 @@ public interface UserClient {
     java.lang.String USER_API = "/api/v1/user";
 
     @GetMapping(USER_API + "/username/{username}")
-    WalletUserDTO getUserByUsername(@PathVariable("username") java.lang.String username);
+    UserDTO getUserByUsername(@PathVariable("username") java.lang.String username);
 }
