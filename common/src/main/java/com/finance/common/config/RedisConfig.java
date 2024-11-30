@@ -2,25 +2,19 @@ package com.finance.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import java.io.IOException;
+
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisNode;
-import org.springframework.data.redis.connection.RedisSentinelConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.core.io.Resource;
 
 import lombok.RequiredArgsConstructor;
-
-import io.lettuce.core.ClientOptions;
 
 /**
  * Redis config.
@@ -34,47 +28,19 @@ import io.lettuce.core.ClientOptions;
 public class RedisConfig {
     private final ObjectMapper objectMapper;
 
-    @Bean("lettuceConnectionFactory")
+    @Bean(destroyMethod="shutdown")
     @Profile("dev")
-    public LettuceConnectionFactory lettuceConnectionFactoryDev(final RedisProperties redisProperties) {
-        return new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort());
+    public RedissonClient redissonDev(@Value("classpath:/redisson-dev.yaml") Resource devConfigFile) throws IOException {
+        final var config = Config.fromYAML(devConfigFile.getInputStream());
+        return Redisson.create(config);
     }
 
-    @Bean("lettuceConnectionFactory")
+
+    @Bean(destroyMethod = "shutdown")
     @Profile({"prod", "sit"})
-    public LettuceConnectionFactory lettuceConnectionFactory(final RedisProperties redisProperties) {
-        var redisSentinelConfiguration = new RedisSentinelConfiguration();
-        redisSentinelConfiguration.master(redisProperties.getSentinel().getMaster());
-        redisSentinelConfiguration.setSentinels(redisProperties.getSentinel()
-            .getNodes()
-            .stream()
-            .map(RedisNode::fromString)
-            .toList());
-
-        var clientOptions = ClientOptions.builder()
-            .pingBeforeActivateConnection(true)
-            .autoReconnect(true)
-            .build();
-
-        var lettuceClientConfiguration = LettuceClientConfiguration.builder()
-            .clientOptions(clientOptions)
-            .build();
-
-        return new LettuceConnectionFactory(redisSentinelConfiguration, lettuceClientConfiguration);
+    public RedissonClient redissonProd(@Value("classpath:/redisson-prod.yaml") Resource productionConfigFile) throws IOException {
+        final var config = Config.fromYAML(productionConfigFile.getInputStream());
+        return Redisson.create(config);
     }
 
-    @Bean
-    @ConditionalOnBean(LettuceConnectionFactory.class)
-    @DependsOn("lettuceConnectionFactory")
-    public RedisTemplate<String, Object> redisTemplate(final RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
-        template.afterPropertiesSet();
-
-        return template;
-    }
 }
