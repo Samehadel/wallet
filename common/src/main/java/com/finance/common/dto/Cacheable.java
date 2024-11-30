@@ -1,4 +1,6 @@
 package com.finance.common.dto;
 
-public interface Cacheable {
+import java.io.Serializable;
+
+public interface Cacheable extends Serializable {
 }

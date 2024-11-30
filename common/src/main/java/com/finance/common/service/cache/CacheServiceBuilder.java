@@ -6,15 +6,14 @@ import com.finance.common.exception.ExceptionService;
 
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnBean(RedisTemplate.class)
+@ConditionalOnProperty(name = "application.cache.enable", havingValue = "true")
 public class CacheServiceBuilder {
     private final ObjectMapper objectMapper;
     private final RedissonClient redissonClient;

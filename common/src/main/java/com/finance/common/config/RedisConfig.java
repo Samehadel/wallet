@@ -1,7 +1,5 @@
 package com.finance.common.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 
 import org.redisson.Redisson;
@@ -24,9 +22,8 @@ import lombok.RequiredArgsConstructor;
  */
 @Configuration
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "enable.redis.cache", havingValue = "true")
+@ConditionalOnProperty(name = "application.cache.enable", havingValue = "true")
 public class RedisConfig {
-    private final ObjectMapper objectMapper;
 
     @Bean(destroyMethod="shutdown")
     @Profile("dev")
