@@ -11,13 +11,15 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
 public class AuditableEntity extends BaseEntity {
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "CREATED_DATE", nullable = false)
+	@Column(name = "CREATED_AT", nullable = false)
 	@CreationTimestamp
 	private LocalDateTime createdDate;
 

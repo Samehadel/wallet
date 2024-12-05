@@ -1,9 +1,6 @@
 package com.finance.common.service.cache;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finance.common.dto.Cacheable;
-import com.finance.common.exception.ExceptionService;
-import com.finance.common.exception.SharedApplicationError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +8,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.redisson.api.RMapCache;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import lombok.AccessLevel;
@@ -21,12 +17,8 @@ import lombok.RequiredArgsConstructor;
 @ConditionalOnProperty(name = "enable.redis.cache", havingValue = "true")
 public class RedisCacheService<V extends Cacheable> implements CacheService<V> {
     private final RMapCache<String, V> mapCache;
-    private final ObjectMapper objectMapper;
     private final Class<V> type;
-    private final ExceptionService exceptionService;
-
-    @Value("${cache.time-to-live-sec:7200}")
-    private int timeToLiveSec;
+    private final int timeToLiveSec;
 
 
     @Override
@@ -41,7 +33,13 @@ public class RedisCacheService<V extends Cacheable> implements CacheService<V> {
 
     @Override
     public V get(String key) {
-        return mapCache.get(key);
+        V value = mapCache.get(key);
+
+        if (value != null && !type.isInstance(value)) {
+            throw new IllegalArgumentException("Cached value is not of the expected type: " + type.getName());
+        }
+
+        return value;
     }
 
     /**

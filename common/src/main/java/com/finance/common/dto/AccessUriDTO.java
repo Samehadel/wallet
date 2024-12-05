@@ -1,8 +1,8 @@
 package com.finance.common.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.finance.common.constants.UrlMethodEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,10 +13,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class AccessUri {
-    private String uri;
+public class AccessUriDTO extends BaseDTO {
+    private String url;
 
-    private String methodType;
+    private UrlMethodEnum method;
+
+    private Boolean isPrivate;
 }

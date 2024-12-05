@@ -1,25 +1,24 @@
 package com.finance.common.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
-import java.util.List;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class AuthenticationDTO {
+public class RoleDTO extends BaseDTO {
+    private Long id;
 
-    private UserDTO walletUser;
+    private String roleName;
 
-    private List<AccessUriDTO> accessUris;
+    private Set<AccessUriDTO> accessUrls;
 }

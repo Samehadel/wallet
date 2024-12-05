@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum UserStatus {
+public enum UserStatusEnum {
     ACTIVE("ACTIVE"),
     INACTIVE("INACTIVE"),
     BLOCKED("BLOCKED"),
@@ -13,11 +13,11 @@ public enum UserStatus {
 
     private final String status;
 
-    public static boolean isActive(final UserStatus status) {
+    public static boolean isActive(final UserStatusEnum status) {
         return status == ACTIVE;
     }
 
-    public static boolean isInactive(final UserStatus status) {
+    public static boolean isInactive(final UserStatusEnum status) {
         return status == INACTIVE;
     }
 }

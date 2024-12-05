@@ -1,9 +1,10 @@
 package com.finance.wallet.user.controller;
 
-import com.finance.common.dto.AuthenticationDTO;
+import com.finance.common.constants.RestGroups;
 import com.finance.common.dto.UserDTO;
 import com.finance.wallet.user.service.UserService;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +19,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public UserDTO register(@RequestBody final UserDTO userDTO) {
-        return userService.register(userDTO);
+    public UserDTO register(@RequestBody @Validated(RestGroups.Create.class) final UserDTO userDTO) {
+        return userService.registerCustomerUser(userDTO);
     }
 
     @GetMapping("/username/{username}")
-    public AuthenticationDTO getAuthentication(@PathVariable("username") final java.lang.String username) {
-        return userService.getAuthenticationByUsername(username);
+    public UserDTO getUserByUsername(@PathVariable("username") final java.lang.String username) {
+        return userService.getByUsername(username);
     }
 }
