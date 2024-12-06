@@ -54,7 +54,7 @@ public class PasswordSHA1Encryption implements PasswordEncryptor {
     }
 
     @Override
-    public boolean checkPassword(final char[] password, final String storedHash) {
+    public boolean passwordMatch(final char[] password, final String storedHash) {
         try {
             log.info("Checking password");
             String[] storedPasswordParts = storedHash.split(":");

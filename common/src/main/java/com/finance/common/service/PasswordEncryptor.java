@@ -4,5 +4,5 @@ public interface PasswordEncryptor {
 
     String hashPassword(char[] password);
 
-    boolean checkPassword(char[] password, String encrypted);
+    boolean passwordMatch(char[] password, String encrypted);
 }

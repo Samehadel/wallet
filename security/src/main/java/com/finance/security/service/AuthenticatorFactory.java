@@ -16,17 +16,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AuthenticatorFactory {
-    private final UserClient userClient;
-    private final PasswordEncryptor passwordEncryptor;
-    private final ExceptionService exceptionService;
-
-    private final Map<String, Authenticator> authenticatorMap = new HashMap<>();
+    private final MobileAuthenticator mobileAuthenticator;
+    private final UsernameAuthenticator usernameAuthenticator;
 
     public Authenticator getAuthenticator(final AuthenticationRequest request) {
         if (StringUtil.isNullOrEmpty(request.getMobile())) {
-            return authenticatorMap.computeIfAbsent("username_authenticator", k -> new UsernameAuthenticator(userClient, passwordEncryptor, exceptionService));
+            return usernameAuthenticator;
         } else {
-            return authenticatorMap.computeIfAbsent("mobile_authenticator", k -> new MobileAuthenticator(userClient, passwordEncryptor, exceptionService));
+            return mobileAuthenticator;
         }
     }
 }

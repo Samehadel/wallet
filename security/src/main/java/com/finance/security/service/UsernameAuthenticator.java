@@ -1,21 +1,27 @@
 package com.finance.security.service;
 
 import com.finance.common.client.UserClient;
-import com.finance.common.dto.AuthResultDTO;
 import com.finance.common.dto.AuthenticationRequest;
+import com.finance.common.dto.UserDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.service.PasswordEncryptor;
 
-import lombok.RequiredArgsConstructor;
+import java.util.function.Function;
 
-@RequiredArgsConstructor
-public class UsernameAuthenticator implements Authenticator {
+import org.springframework.stereotype.Service;
+
+@Service
+public class UsernameAuthenticator extends Authenticator {
     private final UserClient userClient;
-    private final PasswordEncryptor passwordEncryptor;
-    private final ExceptionService exceptionService;
+
+    protected UsernameAuthenticator(final UserClient userClient, final PasswordEncryptor passwordEncryptor,
+            final ExceptionService exceptionService) {
+        super(passwordEncryptor, exceptionService);
+        this.userClient = userClient;
+    }
 
     @Override
-    public AuthResultDTO authenticate(final AuthenticationRequest authenticationRequest) {
-        return null;
+    public Function<AuthenticationRequest, UserDTO> getUserFunction() {
+        return request -> userClient.getUserByUsername(request.getUsername());
     }
 }
