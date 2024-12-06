@@ -1,7 +1,7 @@
 package com.finance.wallet.user.persistence.entity;
 
 import com.finance.common.constants.UserStatusEnum;
-import com.finance.common.entity.AuditableEntity;
+import com.finance.common.persistence.entity.AuditableEntity;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

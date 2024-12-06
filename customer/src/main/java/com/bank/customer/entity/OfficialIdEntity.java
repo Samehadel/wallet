@@ -1,7 +1,7 @@
 package com.bank.customer.entity;
 
 import com.finance.common.enums.OfficialIdTypeEnum;
-import com.finance.common.entity.BaseEntity;
+import com.finance.common.persistence.BaseEntity;
 import jakarta.persistence.*;
 
 import java.util.Date;

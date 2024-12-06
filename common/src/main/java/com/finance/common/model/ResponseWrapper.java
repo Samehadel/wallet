@@ -1,7 +1,4 @@
-package com.finance.common.api;
-
-import com.finance.common.model.ApiResponse;
-import com.finance.common.model.StatusEnum;
+package com.finance.common.model;
 
 import java.time.Instant;
 

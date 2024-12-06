@@ -1,7 +1,7 @@
 package com.bank.notification.Entity;
 
 import com.bank.notification.enums.NotificationStatusEnum;
-import com.finance.common.entity.BaseEntity;
+import com.finance.common.persistence.BaseEntity;
 import com.finance.common.enums.NotificationTypeEnum;
 import jakarta.persistence.*;
 

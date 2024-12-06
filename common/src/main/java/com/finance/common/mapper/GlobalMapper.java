@@ -1,7 +1,7 @@
 package com.finance.common.mapper;
 
 import com.finance.common.dto.BaseDTO;
-import com.finance.common.entity.BaseEntity;
+import com.finance.common.persistence.entity.BaseEntity;
 
 import java.util.List;
 

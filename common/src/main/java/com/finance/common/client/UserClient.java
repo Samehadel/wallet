@@ -13,4 +13,7 @@ public interface UserClient {
 
     @GetMapping(USER_API + "/username/{username}")
     UserDTO getUserByUsername(@PathVariable("username") java.lang.String username);
+
+    @GetMapping(USER_API + "/mobile/{mobile}")
+    UserDTO getUserByMobile(@PathVariable("mobile") String mobile);
 }

@@ -1,6 +1,6 @@
 package com.bank.account.entity;
 
-import com.finance.common.entity.AuditableEntity;
+import com.finance.common.persistence.AuditableEntity;
 import com.finance.common.enums.AccountStatusEnum;
 import com.finance.common.enums.AccountTypeEnum;
 import jakarta.persistence.*;

@@ -1,6 +1,6 @@
 package com.bank.customer.entity;
 
-import com.finance.common.entity.ActiveEntity;
+import com.finance.common.persistence.ActiveEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

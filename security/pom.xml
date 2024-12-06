@@ -10,7 +10,7 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>authentication</artifactId>
+    <artifactId>security</artifactId>
     <version>1.0-0</version>
 
     <properties>
@@ -90,7 +90,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.finance.authentication.AuthenticationApplication</mainClass>
+                    <mainClass>com.finance.security.SecurityApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

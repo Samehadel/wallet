@@ -27,4 +27,9 @@ public class UserController {
     public UserDTO getUserByUsername(@PathVariable("username") final java.lang.String username) {
         return userService.getByUsername(username);
     }
+
+    @GetMapping("/mobile/{mobile}")
+    public UserDTO getUserByMobile(@PathVariable("mobile") final java.lang.String mobile) {
+        return userService.getByMobile(mobile);
+    }
 }

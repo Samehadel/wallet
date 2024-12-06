@@ -1,7 +1,7 @@
-package com.finance.wallet.user.service;
+package com.finance.common.service;
 
 import com.finance.common.exception.ExceptionService;
-import com.finance.wallet.user.exception.UserServiceError;
+import com.finance.common.exception.SharedApplicationError;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -30,8 +30,7 @@ public class PasswordSHA1Encryption implements PasswordEncryptor {
 
             return hashedPassword;
         } catch (NoSuchAlgorithmException e) {
-            exceptionService.throwBadRequestException(UserServiceError.INVALID_ALGORITHM);
-            return null;
+            throw exceptionService.throwBadRequestException(SharedApplicationError.INVALID_ALGORITHM);
         }
     }
 

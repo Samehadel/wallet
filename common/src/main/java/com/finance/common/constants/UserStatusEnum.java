@@ -20,4 +20,12 @@ public enum UserStatusEnum {
     public static boolean isInactive(final UserStatusEnum status) {
         return status == INACTIVE;
     }
+
+    public static boolean statusAllowedForLogin(final UserStatusEnum status) {
+        if (status == null) {
+            return false;
+        }
+
+        return status == ACTIVE;
+    }
 }

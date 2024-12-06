@@ -1,4 +1,4 @@
-package com.finance.common.entity;
+package com.finance.common.persistence.entity;
 
 import java.time.LocalDateTime;
 

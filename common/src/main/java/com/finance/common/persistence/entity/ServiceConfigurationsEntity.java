@@ -1,4 +1,4 @@
-package com.finance.common.entity;
+package com.finance.common.persistence.entity;
 
 import jakarta.persistence.*;
 
@@ -13,8 +13,8 @@ public class ServiceConfigurationsEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @Column(name = "NAME", nullable = false, unique = true, length = 50)
-    private String name;
+    @Column(name = "KEY", nullable = false, unique = true, length = 50)
+    private String key;
 
     @Column(name = "VALUE", nullable = false)
     private String value;

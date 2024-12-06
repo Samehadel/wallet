@@ -1,4 +1,4 @@
-package com.finance.wallet.user.service;
+package com.finance.common.service;
 
 public interface PasswordEncryptor {
 

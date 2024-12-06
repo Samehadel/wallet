@@ -26,6 +26,9 @@ public class ExceptionService {
     public ErrorDetails buildErrorDetails(final ApplicationError applicationError, final String[] args) {
         String errorMessage = messageSource.getMessage(applicationError.getErrorCode(), args, LocaleContextHolder.getLocale());
 
-        return new ErrorDetails(applicationError.getErrorCode(), errorMessage);
+        return ErrorDetails.builder()
+            .errorCode(applicationError.getErrorCode())
+            .errorMessage(errorMessage)
+            .build();
     }
 }

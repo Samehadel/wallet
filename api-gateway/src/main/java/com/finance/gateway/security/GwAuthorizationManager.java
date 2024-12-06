@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.Payload;
 import com.finance.common.constants.CommonHeaders;
-import com.finance.common.dto.AuthenticationDTO;
+import com.finance.common.dto.AuthResultDTO;
 import com.finance.gateway.dto.GwAuthorizationContext;
 import com.finance.gateway.service.AuthenticationService;
 
@@ -48,7 +48,7 @@ public class GwAuthorizationManager implements ReactiveAuthorizationManager<Auth
             .defaultIfEmpty(new AuthorizationDecision(false));
     }
 
-    private Mono<AuthenticationDTO> getAuthenticationDTOMono(final Authentication a) {
+    private Mono<AuthResultDTO> getAuthenticationDTOMono(final Authentication a) {
         final var jwt = new JWT();
         final var username = Optional.ofNullable(a.getPrincipal())
             .map(Object::toString)

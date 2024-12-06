@@ -1,9 +1,9 @@
 package com.finance.gateway.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.finance.common.constants.UserStatus;
-import com.finance.common.dto.AccessUri;
-import com.finance.common.dto.AuthenticationDTO;
+import com.finance.common.constants.UserStatusEnum;
+import com.finance.common.dto.AccessUriDTO;
+import com.finance.common.dto.AuthResultDTO;
 import com.finance.common.util.CollectionUtil;
 import com.finance.gateway.dto.GwAuthorizationContext;
 import com.finance.gateway.dto.PathPatternAccessUri;
@@ -38,13 +38,13 @@ public class AuthenticationService {
         this.objectMapper = objectMapper;
     }
 
-    public GwAuthorizationContext getAuthenticationContext(final AuthenticationDTO authenticationDTO, final ServerHttpRequest request) {
+    public GwAuthorizationContext getAuthenticationContext(final AuthResultDTO authResult, final ServerHttpRequest request) {
         log.info("Getting authentication context");
         try {
-            verifyActiveUser(authenticationDTO);
+            verifyActiveUser(authResult);
 
-            if (userHasAccess(authenticationDTO.getAccessUris(), request)) {
-                String walletUserJson = objectMapper.writeValueAsString(authenticationDTO.getWalletUser());
+            if (userHasAccess(authResult.getAccessUris(), request)) {
+                String walletUserJson = objectMapper.writeValueAsString(authResult.getUser());
                 return buildAuthenticationContext(walletUserJson, true);
             }
 
@@ -55,16 +55,16 @@ public class AuthenticationService {
         }
     }
 
-    private void verifyActiveUser(final AuthenticationDTO authenticationDTO) {
-        if (authenticationDTO == null
-            || authenticationDTO.getWalletUser() == null
-            || authenticationDTO.getWalletUser().getStatus() != UserStatus.ACTIVE) {
+    private void verifyActiveUser(final AuthResultDTO authResult) {
+        if (authResult == null
+            || authResult.getUser() == null
+            || authResult.getUser().getStatus() != UserStatusEnum.ACTIVE) {
 
             throw new NotAllowedException("User is not active");
         }
     }
 
-    private boolean userHasAccess(final List<AccessUri> accessUris, final ServerHttpRequest request) {
+    private boolean userHasAccess(final List<AccessUriDTO> accessUris, final ServerHttpRequest request) {
         final var path = PathContainer.parsePath(request.getPath().subPath(5).value());
         final var httpMethod = request.getMethod();
 
@@ -83,11 +83,11 @@ public class AuthenticationService {
         return buildAuthenticationContext(null, false);
     }
 
-    private List<PathPatternAccessUri> convertToPathPattern(final List<AccessUri> accessUris) {
+    private List<PathPatternAccessUri> convertToPathPattern(final List<AccessUriDTO> accessUris) {
         return accessUris
             .stream()
             .map(accessUri ->
-                new PathPatternAccessUri(PathPatternParser.defaultInstance.parse(accessUri.getUri()), accessUri.getMethodType()))
+                new PathPatternAccessUri(PathPatternParser.defaultInstance.parse(accessUri.getUrl()), accessUri.getMethod().getName()))
             .toList();
     }
 
@@ -95,10 +95,10 @@ public class AuthenticationService {
         return new GwAuthorizationContext(walletUserJson, new AuthorizationDecision(authorizationDecision));
     }
 
-    public Mono<AuthenticationDTO> getAuthenticationCall(final String username) {
+    public Mono<AuthResultDTO> getAuthenticationCall(final String username) {
         return webClient.get()
             .uri(userSvcUrl, username)
             .retrieve()
-            .bodyToMono(AuthenticationDTO.class);
+            .bodyToMono(AuthResultDTO.class);
     }
 }
