@@ -1,9 +1,10 @@
 package com.finance.authentication.controller;
 
-import com.finance.common.dto.AccessUri;
+import com.finance.common.constants.UrlMethodEnum;
+import com.finance.common.constants.UserStatusEnum;
+import com.finance.common.dto.AccessUriDTO;
 import com.finance.common.dto.AuthenticationDTO;
-import com.finance.common.dto.String;
-import com.finance.common.constants.UserStatus;
+import com.finance.common.dto.UserDTO;
 
 import java.util.List;
 
@@ -18,16 +19,16 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationController {
 
     @GetMapping("/{username}")
-    public AuthenticationDTO getAuthentication(@PathVariable("username") java.lang.String username) {
-        String walletUserDTO = String.builder()
+    public AuthenticationDTO getAuthentication(@PathVariable("username") String username) {
+        UserDTO walletUserDTO = UserDTO.builder()
             .username(username)
             .email("sample@example.com")
-            .status(UserStatus.ACTIVE)
+            .status(UserStatusEnum.ACTIVE)
             .build();
 
-        AccessUri accessUri = AccessUri.builder()
-            .uri("/api/v1/user/username/{username}")
-            .methodType("GET")
+        AccessUriDTO accessUri = AccessUriDTO.builder()
+            .url("/api/v1/user/username/{username}")
+            .method(UrlMethodEnum.GET)
             .build();
 
         return AuthenticationDTO.builder()
