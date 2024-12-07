@@ -26,14 +26,10 @@ public class UserEventProducer {
         pushEvent(userId, null, EventTypes.STATUS_CHANGE, null);
     }
 
-    public void pushBlockUserEvent(final Long userId, final String reason) {
-        log.info("Posting Block User Event for userId:[{}]", userId);
-        pushEvent(userId, UserStatus.BLOCKED, EventTypes.STATUS_CHANGE, reason);
-    }
+    public void pushUserLoginEvent(final Long userId) {
+        log.info("Posting User Login Event for userId:[{}]", userId);
 
-    public void pushLockUserEvent(final Long userId, final String reason) {
-        log.info("Posting Lock User Event for userId:[{}]", userId);
-        pushEvent(userId, UserStatus.LOCKED, EventTypes.STATUS_CHANGE, reason);
+        pushEvent(userId, null, EventTypes.SUCCESSFUL_LOGIN, null);
     }
 
     private void pushEvent(final Long userId, final UserStatus userStatus, final EventTypes eventType, final String reason) {

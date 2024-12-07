@@ -13,9 +13,9 @@ public class ServiceConfigurationsEntity {
     @Column(name = "ID", nullable = false)
     private Integer id;
 
-    @Column(name = "KEY", nullable = false, unique = true, length = 50)
+    @Column(name = "CONFIG_KEY", nullable = false, unique = true, length = 50)
     private String key;
 
-    @Column(name = "VALUE", nullable = false)
+    @Column(name = "CONFIG_VALUE", nullable = false)
     private String value;
 }

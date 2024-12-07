@@ -152,7 +152,7 @@ public class UserService {
         final String maxLoginTrailsString = serviceConfiguration.getConfiguration(DatabaseConfigKeys.MAX_LOGIN_TRIALS);
 
         if (StringUtil.isNullOrEmpty(maxLoginTrailsString)) {
-            throw exceptionService.buildInternalException(SharedApplicationError.CONFIGURATION_ERROR, "MLT-1");
+            throw exceptionService.buildInternalExceptionWithReference(SharedApplicationError.CONFIGURATION_ERROR);
         }
 
         return Integer.parseInt(maxLoginTrailsString);

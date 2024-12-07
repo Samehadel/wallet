@@ -1,4 +1,4 @@
 -- liquibase formatted sql
--- changeset Sameh.Adel:0001-create_initial_schema
+-- changeset Sameh.Adel:0001-add_service_configurations
 
-INSERT INTO SERVICE_CONFIGURATIONS ([KEY], [VALUE]) VALUES ('MAX_LOGIN_TRIALS', '5');
+INSERT INTO SERVICE_CONFIGURATIONS (CONFIG_KEY, CONFIG_VALUE) VALUES ('MAX_LOGIN_TRIALS', '5');

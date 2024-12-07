@@ -23,4 +23,5 @@ enum UserStatus {
 enum EventTypes {
   STATUS_CHANGE = 0;
   FAILED_LOGIN_ATTEMPT = 1;
+  SUCCESSFUL_LOGIN = 2;
 }
