@@ -7,13 +7,11 @@ import com.finance.wallet.user.persistence.entity.UserEntity;
 import java.util.List;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper extends GlobalMapper<UserEntity, UserDTO> {
 
     @Override
-    @Mapping(target = "password", ignore = true)
     UserDTO mapToDTO(UserEntity entity);
 
     @Override

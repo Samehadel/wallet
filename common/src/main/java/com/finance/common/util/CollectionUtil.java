@@ -6,4 +6,8 @@ public class CollectionUtil {
 	public static boolean isNullOrEmpty(Collection array) {
 		return array == null || array.size() == 0;
 	}
+
+	public static boolean arrayNullOrEmpty(char[] array) {
+		return array == null || array.length == 0;
+	}
 }

@@ -1,5 +1,6 @@
 package com.finance.security.service;
 
+import com.finance.common.client.UserClient;
 import com.finance.common.constants.AuthResultEnum;
 import com.finance.common.constants.UserStatusEnum;
 import com.finance.common.dto.AuthResultDTO;
@@ -8,39 +9,71 @@ import com.finance.common.dto.UserDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.exception.SharedApplicationError;
 import com.finance.common.service.PasswordEncryptor;
+import com.finance.common.util.CollectionUtil;
+import com.finance.common.util.StringUtil;
+import com.finance.security.event.UserEventProducer;
 
-import java.util.function.Function;
+import org.springframework.stereotype.Service;
 
-public abstract class Authenticator {
-    protected final PasswordEncryptor passwordEncryptor;
-    protected final ExceptionService exceptionService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
-    Authenticator(PasswordEncryptor passwordEncryptor, ExceptionService exceptionService) {
-        this.passwordEncryptor = passwordEncryptor;
-        this.exceptionService = exceptionService;
-    }
+@Service
+@RequiredArgsConstructor
+@Log4j2
+public class Authenticator {
+    private final PasswordEncryptor passwordEncryptor;
+    private final ExceptionService exceptionService;
+    private final UserClient userClient;
+    private final UserEventProducer userEventProducer;
 
     public AuthResultDTO authenticate(final AuthenticationRequest authenticationRequest) {
-        final UserDTO user = getUserFunction().apply(authenticationRequest);
+        final UserDTO user = fetchUser(authenticationRequest);
 
         if (user == null) {
-            throw exceptionService.throwBadRequestException(SharedApplicationError.USER_NOT_FOUND);
-        }
-
-        final boolean passwordMatch = !passwordEncryptor.passwordMatch(authenticationRequest.getPassword(), String.valueOf(user.getPassword()));
-        if (!passwordMatch) {
-            return createAuthResult(AuthResultEnum.INVALID_CREDENTIALS);
+            throw exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND);
         }
 
         if (user.getStatus() == null) {
-            throw exceptionService.throwBadRequestException(SharedApplicationError.GENERIC_ERROR);
+            throw exceptionService.buildBadRequestException(SharedApplicationError.GENERIC_ERROR);
+        }
+
+        final boolean passwordMatch = passwordMatch(authenticationRequest.getPassword(), user.getPassword());
+        if (!passwordMatch) {
+            incrementFailedLoginAttempts(user.getId());
+            return createAuthResult(AuthResultEnum.INVALID_CREDENTIALS);
         }
 
         if (UserStatusEnum.statusAllowedForLogin(user.getStatus())) {
+            incrementFailedLoginAttempts(user.getId());
             return createAuthResult(AuthResultEnum.NOT_AUTHENTICATED);
         }
 
         return createAuthResult(AuthResultEnum.AUTHENTICATED);
+    }
+
+    private boolean passwordMatch(final char[] userHashedPassword, final char[] authenticationPassword) {
+        if (CollectionUtil.arrayNullOrEmpty(userHashedPassword)
+            || CollectionUtil.arrayNullOrEmpty(authenticationPassword)) {
+
+            return false;
+        }
+
+        return passwordEncryptor.passwordMatch(userHashedPassword, String.valueOf(authenticationPassword));
+    }
+
+    private UserDTO fetchUser(final AuthenticationRequest authenticationRequest) {
+        if (!StringUtil.isNullOrEmpty(authenticationRequest.getMobile())) {
+            return userClient.getUserByMobile(authenticationRequest.getMobile());
+        } else if (!StringUtil.isNullOrEmpty(authenticationRequest.getUsername())) {
+            return userClient.getUserByUsername(authenticationRequest.getUsername());
+        }
+
+        throw exceptionService.buildBadExceptionWithReference(SharedApplicationError.GENERIC_ERROR);
+    }
+
+    private void incrementFailedLoginAttempts(final Long userId) {
+        userEventProducer.pushIncreaseFailedLoginAttemptsEvent(userId);
     }
 
     private AuthResultDTO createAuthResult(final AuthResultEnum authenticated) {
@@ -48,6 +81,4 @@ public abstract class Authenticator {
             .authResult(authenticated)
             .build();
     }
-
-    abstract Function<AuthenticationRequest, UserDTO> getUserFunction();
 }

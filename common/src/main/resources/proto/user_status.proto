@@ -1,0 +1,26 @@
+syntax = "proto3";
+package com.finance.common.event.schema.user;
+
+import "google/protobuf/wrappers.proto";
+
+option java_package = "com.finance.common.event.schema.user";
+option java_multiple_files = true;
+
+message UserStatusMessage {
+  int64 user_id = 1;
+  UserStatus new_status = 2;
+  string reason = 3;
+  int64 new_status_time = 4;
+  EventTypes event_type = 5;
+}
+
+enum UserStatus {
+  ACTIVE = 0;
+  LOCKED = 1;
+  BLOCKED = 2;
+}
+
+enum EventTypes {
+  STATUS_CHANGE = 0;
+  FAILED_LOGIN_ATTEMPT = 1;
+}

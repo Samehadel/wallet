@@ -21,7 +21,7 @@ public class DatabaseServiceConfig implements ServiceConfiguration {
             return null;
         } catch (Exception e) {
             log.error("Error getting configuration: [{}]", key, e);
-            throw exceptionService.throwInternalException(SharedApplicationError.GENERIC_ERROR);
+            throw exceptionService.buildInternalException(SharedApplicationError.GENERIC_ERROR);
         }
     }
 }

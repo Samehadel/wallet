@@ -1,6 +1,5 @@
 package com.finance.common.exception;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finance.common.model.ApiResponse;
 import com.finance.common.util.ApiResponseBuilder;
@@ -8,7 +7,6 @@ import com.finance.common.util.ApiResponseBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;

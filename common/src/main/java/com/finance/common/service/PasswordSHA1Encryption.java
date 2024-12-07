@@ -30,7 +30,7 @@ public class PasswordSHA1Encryption implements PasswordEncryptor {
 
             return hashedPassword;
         } catch (NoSuchAlgorithmException e) {
-            throw exceptionService.throwBadRequestException(SharedApplicationError.INVALID_ALGORITHM);
+            throw exceptionService.buildBadRequestException(SharedApplicationError.INVALID_ALGORITHM);
         }
     }
 

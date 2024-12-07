@@ -1,40 +1,25 @@
 package com.finance.security.controller;
 
-import com.finance.common.constants.UrlMethodEnum;
-import com.finance.common.constants.UserStatusEnum;
-import com.finance.common.dto.AccessUriDTO;
 import com.finance.common.dto.AuthResultDTO;
-import com.finance.common.dto.UserDTO;
+import com.finance.common.dto.AuthenticationRequest;
+import com.finance.security.service.Authenticator;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequestMapping("/authenticate")
 @RequiredArgsConstructor
 public class AuthenticationController {
+    private final Authenticator authenticator;
 
-    @GetMapping("/{username}")
-    public AuthResultDTO getAuthentication(@PathVariable("username") String username) {
-        UserDTO walletUserDTO = UserDTO.builder()
-            .username(username)
-            .email("sample@example.com")
-            .status(UserStatusEnum.ACTIVE)
-            .build();
-
-        AccessUriDTO accessUri = AccessUriDTO.builder()
-            .url("/api/v1/user/username/{username}")
-            .method(UrlMethodEnum.GET)
-            .build();
-
-        return AuthResultDTO.builder()
-            .user(walletUserDTO)
-            .accessUris(List.of(accessUri))
-            .build();
+    @PostMapping
+    public AuthResultDTO getAuthentication(@RequestBody AuthenticationRequest authenticationRequest) {
+        return authenticator.authenticate(authenticationRequest);
     }
 
 }

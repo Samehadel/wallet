@@ -41,3 +41,14 @@ HELP.md
 mvnw.cmd
 mvnw
 maven-wrapper.properties
+
+broker-1-data/
+broker-2-data/
+broker-3-data/
+
+zookeeper-1_data/
+zookeeper-2_data/
+zookeeper-3_data/
+zookeeper-1_log/
+zookeeper-2_log/
+zookeeper-3_log/

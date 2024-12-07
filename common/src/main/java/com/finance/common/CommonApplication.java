@@ -2,10 +2,10 @@ package com.finance.common;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "com.finance.common.persistence.repository")
+@EnableAsync
 public class CommonApplication {
 
 	public static void main(String[] args) {

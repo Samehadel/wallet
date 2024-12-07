@@ -51,11 +51,11 @@ public class UserService {
 
     private void validateUserNotExists(final UserDTO userDTO) {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw exceptionService.throwBadRequestException(UserServiceError.USERNAME_ALREADY_EXISTS);
+            throw exceptionService.buildBadRequestException(UserServiceError.USERNAME_ALREADY_EXISTS);
         }
 
         if (userRepository.existsByMobile(userDTO.getMobile())) {
-            throw exceptionService.throwBadRequestException(UserServiceError.MOBILE_ALREADY_EXISTS);
+            throw exceptionService.buildBadRequestException(UserServiceError.MOBILE_ALREADY_EXISTS);
         }
     }
 
@@ -67,7 +67,7 @@ public class UserService {
         }
 
         final var userEntity = userRepository.findByUsername(username)
-            .orElseThrow(() -> exceptionService.throwBadRequestException(SharedApplicationError.USER_NOT_FOUND));
+            .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
 
         return userMapper.mapToDTO(userEntity);
     }
@@ -80,7 +80,7 @@ public class UserService {
         }
 
         final var userEntity = userRepository.findByMobile(mobile)
-            .orElseThrow(() -> exceptionService.throwBadRequestException(SharedApplicationError.USER_NOT_FOUND));
+            .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
 
         return userMapper.mapToDTO(userEntity);
     }
@@ -101,7 +101,7 @@ public class UserService {
     private UserDTO block(final Long userId) {
         log.info("Blocking user with id: {}", userId);
         final var userEntity = userRepository.findById(userId)
-            .orElseThrow(() -> exceptionService.throwBadRequestException(SharedApplicationError.USER_NOT_FOUND));
+            .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
 
         userEntity.setStatus(UserStatusEnum.BLOCKED);
         userEntity.setStatusUpdatedAt(LocalDateTime.now());
@@ -113,7 +113,7 @@ public class UserService {
     public void updateLastLoginDate(final Long userId) {
         log.info("Updating last login date for user with id: {}", userId);
         final var userEntity = userRepository.findById(userId)
-            .orElseThrow(() -> exceptionService.throwBadRequestException(SharedApplicationError.USER_NOT_FOUND));
+            .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
 
         userEntity.setLastLoginDate(LocalDateTime.now());
         userRepository.save(userEntity);
@@ -122,7 +122,7 @@ public class UserService {
     public void resetLoginTrials(final Long userId) {
         log.info("Resetting login trials for user with id: {}", userId);
         final var userEntity = userRepository.findById(userId)
-            .orElseThrow(() -> exceptionService.throwBadRequestException(SharedApplicationError.USER_NOT_FOUND));
+            .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
 
         userEntity.setLoginTrials(0);
         userRepository.save(userEntity);
@@ -131,7 +131,7 @@ public class UserService {
     public int incrementFailedLoginTrials(final Long userId) {
         log.info("Incrementing login trials for user with id: {}", userId);
         final var userEntity = userRepository.findById(userId)
-            .orElseThrow(() -> exceptionService.throwBadRequestException(SharedApplicationError.USER_NOT_FOUND));
+            .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
 
         final var loginTrials = userEntity.getLoginTrials() + 1;
         userEntity.setLoginTrials(loginTrials);
@@ -152,7 +152,7 @@ public class UserService {
         final String maxLoginTrailsString = serviceConfiguration.getConfiguration(DatabaseConfigKeys.MAX_LOGIN_TRIALS);
 
         if (StringUtil.isNullOrEmpty(maxLoginTrailsString)) {
-            throw exceptionService.throwInternalException(SharedApplicationError.CONFIGURATION_ERROR, "MLT-1");
+            throw exceptionService.buildInternalException(SharedApplicationError.CONFIGURATION_ERROR, "MLT-1");
         }
 
         return Integer.parseInt(maxLoginTrailsString);
@@ -161,7 +161,7 @@ public class UserService {
     public void unlockUser(final Long userId) {
         log.info("Unlocking user with id: {}", userId);
         final var userEntity = userRepository.findById(userId)
-            .orElseThrow(() -> exceptionService.throwBadRequestException(SharedApplicationError.USER_NOT_FOUND));
+            .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
 
         userEntity.setStatus(UserStatusEnum.ACTIVE);
         userEntity.setStatusUpdatedAt(LocalDateTime.now());

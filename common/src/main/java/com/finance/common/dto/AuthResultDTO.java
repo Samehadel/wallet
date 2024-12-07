@@ -25,4 +25,6 @@ public class AuthResultDTO {
     private List<AccessUriDTO> accessUris;
 
     private AuthResultEnum authResult;
+
+    private String token;
 }

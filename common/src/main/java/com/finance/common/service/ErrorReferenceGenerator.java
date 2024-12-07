@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class ErrorReferenceGenerator {
     private static final Random RANDOM = new Random();
 
-    public static String generateErrorReverence(final String service) {
-        return String.format("%s-%d", service, RANDOM.nextInt(9000) + 1000);
+    public static String generateErrorReverence() {
+        return String.valueOf(RANDOM.nextInt(9000) + 1000);
     }
 }
