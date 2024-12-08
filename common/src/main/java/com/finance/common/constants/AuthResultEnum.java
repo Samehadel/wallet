@@ -3,7 +3,7 @@ package com.finance.common.constants;
 public enum AuthResultEnum {
     AUTHENTICATED,
     INVALID_CREDENTIALS,
-    NOT_AUTHENTICATED,
+    INVALID_USER_STATUS,
     AUTHORIZED,
     UNAUTHORIZED
 }

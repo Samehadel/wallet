@@ -46,7 +46,9 @@ public class UserService {
         userDTO.setPassword(null);
 
         userEntity = userRepository.save(userEntity);
-        return userMapper.mapToDTO(userEntity);
+        log.info("User registered successfully");
+
+        return userMapper.mapToDTO(userEntity, true);
     }
 
     private void validateUserNotExists(final UserDTO userDTO) {
@@ -61,15 +63,21 @@ public class UserService {
 
     public UserDTO getByUsername(final String username) {
         log.info("Getting user by username: {}", username);
-
-        if (mockUserEnabled) {
-            return getMockUser(username);
-        }
-
-        final var userEntity = userRepository.findByUsername(username)
-            .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
+        final var userEntity = getUserEntityByUsername(username);
 
         return userMapper.mapToDTO(userEntity);
+    }
+
+    public UserDTO getByUsernameExcludeSensitiveInfo(final String username) {
+        log.info("Getting user by username: {}", username);
+        final var userEntity = getUserEntityByUsername(username);
+
+        return userMapper.mapToDTO(userEntity, true);
+    }
+
+    private UserEntity getUserEntityByUsername(final String username) {
+        return userRepository.findByUsername(username)
+            .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
     }
 
     public UserDTO getByMobile(final String mobile) {

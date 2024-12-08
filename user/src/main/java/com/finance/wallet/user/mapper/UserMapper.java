@@ -17,6 +17,15 @@ public interface UserMapper extends GlobalMapper<UserEntity, UserDTO> {
     @Override
     List<UserDTO> mapToDTO(List<UserEntity> entity);
 
+    default UserDTO mapToDTO(UserEntity entity, boolean excludeSensitiveData) {
+        UserDTO dto = mapToDTO(entity);
+        if (excludeSensitiveData) {
+            dto.setPassword(null);
+        }
+
+        return dto;
+    }
+
     default java.lang.String map(final char[] value) {
         if (value == null) {
             return null;

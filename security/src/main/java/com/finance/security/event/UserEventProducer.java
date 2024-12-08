@@ -17,6 +17,7 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@Async("eventTaskExecutor")
 public class UserEventProducer {
     private final EventProducer eventProducer;
 

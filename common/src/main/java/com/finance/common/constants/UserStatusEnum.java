@@ -26,6 +26,6 @@ public enum UserStatusEnum {
             return false;
         }
 
-        return status == ACTIVE;
+        return status == ACTIVE || status == INACTIVE;
     }
 }

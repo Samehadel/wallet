@@ -17,7 +17,7 @@ import lombok.Setter;
 @Service
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "application.cache.enable", havingValue = "true")
-public class CacheServiceBuilder {
+public class CacheServiceFactory {
     private final RedissonClient redissonClient;
     private final Map<String, CacheService<? extends Cacheable>> cacheServiceMap = new ConcurrentHashMap<>();
 

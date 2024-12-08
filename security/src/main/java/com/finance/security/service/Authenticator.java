@@ -46,7 +46,7 @@ public class Authenticator {
 
         if (!UserStatusEnum.statusAllowedForLogin(user.getStatus())) {
             incrementFailedLoginAttempts(user.getId());
-            return createAuthResult(AuthResultEnum.NOT_AUTHENTICATED);
+            return createAuthResult(AuthResultEnum.INVALID_USER_STATUS);
         }
 
         updateLastLoginDate(user.getId());
@@ -54,14 +54,11 @@ public class Authenticator {
     }
 
     private boolean passwordMatch(final char[] userHashedPassword, final char[] authenticationPassword) {
-        /*if (CollectionUtil.arrayNullOrEmpty(userHashedPassword)
+        if (CollectionUtil.arrayNullOrEmpty(userHashedPassword)
             || CollectionUtil.arrayNullOrEmpty(authenticationPassword)) {
-
             return false;
         }
-
-        return passwordEncryptor.passwordMatch(userHashedPassword, String.valueOf(authenticationPassword));*/
-        return true;
+        return passwordEncryptor.passwordMatch(userHashedPassword, String.valueOf(authenticationPassword));
     }
 
     private UserDTO fetchUser(final AuthenticationRequest authenticationRequest) {
