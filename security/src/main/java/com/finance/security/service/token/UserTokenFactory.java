@@ -31,7 +31,7 @@ public class UserTokenFactory {
     private String userTokenCacheName;
 
     public UserToken createUserToken(final UserDTO user) {
-        log.info("Creating token for user [{}]", user.getUsername());
+        log.info("Creating new user token");
         validateRequiredFields(user);
         UserToken userToken = UserToken.builder()
             .token(tokenService.generateToken(user.getUsername()))
@@ -42,6 +42,8 @@ public class UserTokenFactory {
             .build();
 
         cacheUserToken(user.getUsername(), userToken);
+        log.info("User token created and cached successfully");
+
         return userToken;
     }
 
@@ -52,9 +54,20 @@ public class UserTokenFactory {
     }
 
     private void cacheUserToken(final String username, final UserToken userToken) {
+        log.info("Caching user token for user [{}]", username);
         CacheService<UserToken> tokenCacheService = cacheServiceFactory.buildCacheInstance(userTokenCacheName, UserToken.class);
         tokenCacheService.cache(username, userToken);
     }
 
-    public
+    public UserTokenHolder getUserToken(final String username) {
+        log.info("Getting user token for user [{}]", username);
+        UserToken userToken = getUserTokenFromCache(username);
+        return new UserTokenHolder(userToken);
+    }
+
+    private UserToken getUserTokenFromCache(final String username) {
+        log.info("Getting user token from cache for user [{}]", username);
+        CacheService<UserToken> tokenCacheService = cacheServiceFactory.buildCacheInstance(userTokenCacheName, UserToken.class);
+        return tokenCacheService.get(username);
+    }
 }

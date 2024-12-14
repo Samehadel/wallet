@@ -1,13 +1,11 @@
-package com.finance.security.service;
-
-import com.finance.security.service.token.UserToken;
+package com.finance.security.service.token;
 
 import java.time.LocalDateTime;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class UserTokenValidator {
+public class UserTokenHolder {
     private final UserToken userToken;
 
     public boolean expired() {
