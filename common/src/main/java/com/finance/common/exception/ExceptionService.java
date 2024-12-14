@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class ExceptionService {
     private final MessageSource messageSource;
 
-    @Value("spring.application.name")
+    @Value("${spring.application.name}")
     private String serviceName;
 
     public BadRequestException buildBadRequestException(final ApplicationError applicationError, final String... args) {
@@ -38,6 +38,12 @@ public class ExceptionService {
         ErrorDetails errorDetails = buildErrorDetails(applicationError, new ErrorReference(serviceName), args);
 
         return new InternalException(errorDetails);
+    }
+
+    public UnauthorizedException buildUnauthorizedException() {
+        ErrorDetails errorDetails = buildErrorDetails(SharedApplicationError.UNAUTHORIZED, null);
+
+        return new UnauthorizedException(errorDetails);
     }
 
     public ErrorDetails buildErrorDetails(final ApplicationError applicationError, final String[] args) {

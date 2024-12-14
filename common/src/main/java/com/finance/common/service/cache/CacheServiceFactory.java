@@ -29,27 +29,11 @@ public class CacheServiceFactory {
         return buildCacheInstance(cacheName, type, defaultCacheTtl);
     }
 
-    /**
-     * Build a cache service instance with a custom TTL.
-     *
-     * @param cacheName     the cache name
-     * @param type          the class type of the cacheable object
-     * @param timeToLiveSec the custom TTL in seconds
-     * @return the cache service instance
-     */
     @SuppressWarnings("unchecked")
     public <V extends Cacheable> CacheService<V> buildCacheInstance(final String cacheName, final Class<V> type, final int timeToLiveSec) {
         return (CacheService<V>) cacheServiceMap.computeIfAbsent(cacheName, name -> createCacheService(name, type, timeToLiveSec));
     }
 
-    /**
-     * Create a new cache service instance.
-     *
-     * @param cacheName     the cache name
-     * @param type          the class type of the cacheable object
-     * @param timeToLiveSec the TTL in seconds
-     * @return a new RedisCacheService instance
-     */
     private <V extends Cacheable> RedisCacheService<V> createCacheService(final String cacheName, Class<V> type, int timeToLiveSec) {
         RMapCache<String, V> mapCache = redissonClient.getMapCache(cacheName);
         return new RedisCacheService<>(mapCache, type, timeToLiveSec);

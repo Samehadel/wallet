@@ -12,6 +12,8 @@ import com.finance.common.service.PasswordEncryptor;
 import com.finance.common.util.CollectionUtil;
 import com.finance.common.util.StringUtil;
 import com.finance.security.event.UserEventProducer;
+import com.finance.security.service.token.UserToken;
+import com.finance.security.service.token.UserTokenFactory;
 
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ public class Authenticator {
     private final ExceptionService exceptionService;
     private final UserClient userClient;
     private final UserEventProducer userEventProducer;
+    private final UserTokenFactory userTokenFactory;
 
     public AuthResultDTO authenticate(final AuthenticationRequest authenticationRequest) {
         final UserDTO user = fetchUser(authenticationRequest);
@@ -49,8 +52,9 @@ public class Authenticator {
             return createAuthResult(AuthResultEnum.INVALID_USER_STATUS);
         }
 
+        UserToken userToken = userTokenFactory.createUserToken(user);
         updateLastLoginDate(user.getId());
-        return createAuthResult(AuthResultEnum.AUTHENTICATED);
+        return createAuthResult(AuthResultEnum.AUTHENTICATED, userToken.getToken());
     }
 
     private boolean passwordMatch(final char[] userHashedPassword, final char[] authenticationPassword) {
@@ -76,8 +80,13 @@ public class Authenticator {
     }
 
     private AuthResultDTO createAuthResult(final AuthResultEnum authenticated) {
+        return createAuthResult(authenticated, null);
+    }
+
+    private AuthResultDTO createAuthResult(final AuthResultEnum authenticated, final String token) {
         return AuthResultDTO.builder()
             .authResult(authenticated)
+            .token(token)
             .build();
     }
 
