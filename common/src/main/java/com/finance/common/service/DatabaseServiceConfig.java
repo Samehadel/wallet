@@ -4,30 +4,41 @@ import com.finance.common.dto.ServiceConfigurationDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.exception.SharedApplicationError;
 import com.finance.common.persistence.repository.ServiceConfigRepository;
-import com.finance.common.service.cache.CacheService;
+import com.finance.common.service.cache.CacheOperationService;
 import com.finance.common.service.cache.CacheServiceFactory;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
-@RequiredArgsConstructor
-@ConditionalOnProperty(value = "enable.database.service.config", havingValue = "true")
 public class DatabaseServiceConfig implements ServiceConfiguration {
     private final ExceptionService exceptionService;
     private final ServiceConfigRepository serviceConfigurationRepository;
-    private final CacheServiceFactory cacheServiceFactory;
+    private final CacheOperationService<ServiceConfigurationDTO> cacheOperationService;
 
     @Value("${service.config.cache.enabled:false}")
-    private boolean cacheEnabled;
+    private boolean serviceConfigCacheEnabled;
 
     @Value("${service.config.cache.name:service_config_cache}")
     private String cacheName;
+
+    public DatabaseServiceConfig(final ExceptionService exceptionService, final ServiceConfigRepository serviceConfigurationRepository,
+        final Optional<CacheServiceFactory> cacheServiceFactoryOptional) {
+
+        this.exceptionService = exceptionService;
+        this.serviceConfigurationRepository = serviceConfigurationRepository;
+        this.cacheOperationService = CacheOperationService.<ServiceConfigurationDTO>builder()
+            .cacheServiceFactory(cacheServiceFactoryOptional.orElse(null))
+            .cacheName(cacheName)
+            .type(ServiceConfigurationDTO.class)
+            .timeToLiveSeconds(86400)
+            .build();
+    }
 
     @Override
     public String getConfiguration(final String key) {
@@ -50,10 +61,9 @@ public class DatabaseServiceConfig implements ServiceConfiguration {
     }
 
     private String fetchConfigurationFromCacheIfEnabled(final String key) {
-        if (cacheEnabled) {
+        if (serviceConfigCacheEnabled) {
             log.info("Fetching configuration from cache for Key: [{}]", key);
-            CacheService<ServiceConfigurationDTO> cacheService = getCacheService();
-            ServiceConfigurationDTO configuration = cacheService.get(key);
+            ServiceConfigurationDTO configuration = cacheOperationService.get(key);
 
             if (configuration != null) {
                 log.info("Configuration found in cache for Key: [{}]", key);
@@ -64,15 +74,11 @@ public class DatabaseServiceConfig implements ServiceConfiguration {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private void cacheConfigurationIfEnabled(final String key, final String value) {
-        if (cacheEnabled) {
+        if (serviceConfigCacheEnabled) {
             log.info("Caching configuration for Key: [{}]", key);
-            final var cacheService = cacheServiceFactory.buildCacheInstance(cacheName, ServiceConfigurationDTO.class);
-            cacheService.cache(key, new ServiceConfigurationDTO(value));
+            cacheOperationService.cache(key, new ServiceConfigurationDTO(value));
         }
-    }
-
-    private CacheService<ServiceConfigurationDTO> getCacheService() {
-        return cacheServiceFactory.buildCacheInstance(cacheName, ServiceConfigurationDTO.class);
     }
 }

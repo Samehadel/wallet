@@ -54,13 +54,13 @@ public class PasswordSHA1Encryption implements PasswordEncryptor {
     }
 
     @Override
-    public boolean passwordMatch(final char[] password, final String storedHash) {
+    public boolean passwordMatch(final char[] plainPassword, final String hashedPassword) {
         try {
             log.info("Checking password");
-            String[] storedPasswordParts = storedHash.split(":");
+            String[] storedPasswordParts = hashedPassword.split(":");
             byte[] storedSalt = Base64.getDecoder().decode(storedPasswordParts[0]);
 
-            final var hashedInput = this.hashPassword(password, storedSalt).split(":")[1];
+            final var hashedInput = this.hashPassword(plainPassword, storedSalt).split(":")[1];
 
             return hashedInput.equals(storedPasswordParts[1]);
         } catch (Exception e) {

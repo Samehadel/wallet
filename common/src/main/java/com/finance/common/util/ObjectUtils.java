@@ -14,4 +14,11 @@ public class ObjectUtils {
         return false;
     }
 
+    public static boolean isNull(final Object object) {
+        return object == null;
+    }
+
+    public static boolean notNull(final Object object) {
+        return object != null;
+    }
 }

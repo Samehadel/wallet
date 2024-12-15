@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class RedisCacheService<V extends Cacheable> implements CacheService<V> {
     private final RMapCache<String, V> mapCache;
     private final Class<V> type;
-    private final int timeToLiveSec;
+    private final long timeToLiveSec;
 
 
     @Override

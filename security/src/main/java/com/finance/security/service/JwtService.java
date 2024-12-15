@@ -2,7 +2,6 @@ package com.finance.security.service;
 
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.util.StringUtil;
-import com.finance.security.service.token.UserTokenFactory;
 
 import java.util.Collections;
 import java.util.Date;
@@ -27,11 +26,11 @@ import javax.crypto.SecretKey;
 public class JwtService implements TokenService {
     private final ExceptionService exceptionService;
 
-    @Value("${jwt.secret:secret}")
+    @Value("${user.token.secret:secret}")
     private String tokenSecret;
 
 
-    @Value("${jwt.expiration.sec:3600}")
+    @Value("${user.token.expiration.sec:3600}")
     private Integer jwtExpirationSec;
 
     @Override
@@ -51,12 +50,12 @@ public class JwtService implements TokenService {
     }
 
     @Override
-    public String parseForUsername(String jwt) {
+    public String parseForUsername(String token) {
         try {
-            if (StringUtil.isNullOrEmpty(jwt)) {
+            if (StringUtil.isNullOrEmpty(token)) {
                 return null;
             }
-            Claims payload = getJWTClaims(jwt);
+            Claims payload = getJWTClaims(token);
             return payload.getSubject();
         } catch (SignatureException exception) {
             throw exceptionService.buildUnauthorizedException();

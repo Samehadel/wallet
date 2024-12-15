@@ -1,5 +1,7 @@
 package com.finance.security.service.token;
 
+import com.finance.common.util.ObjectUtils;
+
 import java.time.LocalDateTime;
 
 import lombok.RequiredArgsConstructor;
@@ -7,26 +9,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserTokenHolder {
     private final UserToken userToken;
+    private final long maxIdleTimeSeconds;
 
     public boolean expired() {
-        return userToken == null
-            || userToken.getExpirationTime() == null
-            || userToken.getExpirationTime().isBefore(LocalDateTime.now());
+        return !ObjectUtils.isNull(userToken)
+            && userToken.getExpirationTime() != null
+            && userToken.getExpirationTime().isBefore(LocalDateTime.now());
     }
 
     public boolean sameToken(final String token) {
-        return userToken != null
+        return !ObjectUtils.isNull(userToken)
             && userToken.getToken() != null
             && userToken.getToken().equals(token);
     }
 
-    public boolean idle(final int maxIdleSeconds) {
-        return userToken != null
+    public boolean idle() {
+        return !ObjectUtils.isNull(userToken)
             && userToken.getLastAccessTime() != null
-            && idleTimeApproached(maxIdleSeconds);
+            && idleTimeApproached(maxIdleTimeSeconds);
     }
 
-    private boolean idleTimeApproached(final int maxIdleSeconds) {
+    private boolean idleTimeApproached(final long maxIdleSeconds) {
         return userToken.getLastAccessTime().plusSeconds(maxIdleSeconds).isBefore(LocalDateTime.now());
     }
 }
