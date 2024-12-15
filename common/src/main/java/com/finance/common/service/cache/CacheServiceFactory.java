@@ -1,8 +1,12 @@
 package com.finance.common.service.cache;
 
 import com.finance.common.dto.Cacheable;
+import com.finance.common.exception.ExceptionService;
+import com.finance.common.exception.SharedApplicationError;
+import com.finance.common.util.ObjectUtils;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.redisson.api.RMapCache;
@@ -20,23 +24,33 @@ import lombok.extern.log4j.Log4j2;
 @ConditionalOnBean(RedissonClient.class)
 public class CacheServiceFactory {
     private final RedissonClient redissonClient;
+    private final ExceptionService exceptionService;
     private final Map<String, CacheService<? extends Cacheable>> cacheServiceMap = new ConcurrentHashMap<>();
 
     @Value("${cache.default.time-to-live-sec:172800}")
     private Integer defaultTimeToLiveSeconds;
 
-    public CacheServiceFactory(final RedissonClient redissonClient) {
+    public CacheServiceFactory(final RedissonClient redissonClient, final ExceptionService exceptionService) {
         this.redissonClient = redissonClient;
+        this.exceptionService = exceptionService;
         log.info("Cache service factory initialized with default ttl [{}]", this.defaultTimeToLiveSeconds);
     }
 
     public <V extends Cacheable> CacheService<V> buildCacheInstance(final String cacheName, final Class<V> type) {
+        if (ObjectUtils.anyNull(cacheName, type)) {
+            throw exceptionService.buildInternalExceptionWithReference(SharedApplicationError.MISSING_REQUIRED_FIELD, "cache name or type");
+        }
         return buildCacheInstance(cacheName, type, defaultTimeToLiveSeconds);
     }
 
     @SuppressWarnings("unchecked")
-    public <V extends Cacheable> CacheService<V> buildCacheInstance(final String cacheName, final Class<V> type, long customTtlSeconds) {
+    public <V extends Cacheable> CacheService<V> buildCacheInstance(final String cacheName, final Class<V> type, final long customTtlSeconds) {
         log.debug("Building cache service for cache name [{}], type [{}], time to live [{}]", cacheName, type, customTtlSeconds);
+
+        if (ObjectUtils.anyNull(cacheName, type)) {
+            log.error("Invalid cache name or type, cache name [{}], type [{}]", cacheName, type);
+            throw exceptionService.buildInternalExceptionWithReference(SharedApplicationError.MISSING_REQUIRED_FIELD, "cache name or type");
+        }
 
         return (CacheService<V>) cacheServiceMap.computeIfAbsent(cacheName, name -> createCacheService(name, type, getTtlOrDefault(customTtlSeconds)));
     }

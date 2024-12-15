@@ -11,19 +11,25 @@ import com.finance.security.service.TokenService;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class UserTokenFactory {
     private final ExceptionService exceptionService;
     private final TokenService tokenService;
-    private final CacheOperationService<UserToken> cacheOperationService;
+    private final Optional<CacheServiceFactory> cacheServiceFactoryOptional;
 
-    @Value("${redis.user.token.cache.name}")
+    private CacheOperationService<UserToken> cacheOperationService;
+
+    @Value("${redis.user.token.cache.name:user-token-cache}")
     private String userTokenCacheName;
 
     @Value("${user.token.expiration.sec:3600}")
@@ -32,11 +38,8 @@ public class UserTokenFactory {
     @Value("${user.token.max.idle.time.sec:300}")
     private long maxIdleTimeSeconds;
 
-    public UserTokenFactory(final ExceptionService exceptionService, final TokenService tokenService,
-        final Optional<CacheServiceFactory> cacheServiceFactoryOptional) {
-
-        this.exceptionService = exceptionService;
-        this.tokenService = tokenService;
+    @PostConstruct
+    public void initializeCacheOperation() {
         this.cacheOperationService = CacheOperationService.<UserToken>builder()
             .cacheServiceFactory(cacheServiceFactoryOptional.orElse(null))
             .cacheName(userTokenCacheName)

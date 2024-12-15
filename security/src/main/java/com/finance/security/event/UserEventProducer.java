@@ -24,7 +24,7 @@ public class UserEventProducer {
     public void pushIncreaseFailedLoginAttemptsEvent(final Long userId) {
         log.info("Posting Increase Failed Login Attempts Event for userId:[{}]", userId);
 
-        pushEvent(userId, null, EventTypes.STATUS_CHANGE, null);
+        pushEvent(userId, null, EventTypes.FAILED_LOGIN_ATTEMPT, null);
     }
 
     public void pushUserLoginEvent(final Long userId) {

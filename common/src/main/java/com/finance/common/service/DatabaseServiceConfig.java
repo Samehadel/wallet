@@ -9,31 +9,36 @@ import com.finance.common.service.cache.CacheServiceFactory;
 
 import java.util.Optional;
 
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
+@ConditionalOnProperty(value = "service.config.type", havingValue = "database")
+@RequiredArgsConstructor
 public class DatabaseServiceConfig implements ServiceConfiguration {
     private final ExceptionService exceptionService;
     private final ServiceConfigRepository serviceConfigurationRepository;
-    private final CacheOperationService<ServiceConfigurationDTO> cacheOperationService;
+    private final Optional<CacheServiceFactory> cacheServiceFactoryOptional;
+
+    private CacheOperationService<ServiceConfigurationDTO> cacheOperationService;
 
     @Value("${service.config.cache.enabled:false}")
     private boolean serviceConfigCacheEnabled;
 
-    @Value("${service.config.cache.name:service_config_cache}")
+    @Value("${service.config.cache.name:service-config-cache}")
     private String cacheName;
 
-    public DatabaseServiceConfig(final ExceptionService exceptionService, final ServiceConfigRepository serviceConfigurationRepository,
-        final Optional<CacheServiceFactory> cacheServiceFactoryOptional) {
-
-        this.exceptionService = exceptionService;
-        this.serviceConfigurationRepository = serviceConfigurationRepository;
-        this.cacheOperationService = CacheOperationService.<ServiceConfigurationDTO>builder()
-            .cacheServiceFactory(cacheServiceFactoryOptional.orElse(null))
+    @PostConstruct
+    public void initializeCacheOperation() {
+        cacheOperationService = CacheOperationService.<ServiceConfigurationDTO>builder()
+            .cacheServiceFactory(cacheServiceFactoryOptional.orElseThrow())
             .cacheName(cacheName)
             .type(ServiceConfigurationDTO.class)
             .timeToLiveSeconds(86400)
