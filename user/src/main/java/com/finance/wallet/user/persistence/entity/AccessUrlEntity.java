@@ -1,6 +1,7 @@
 package com.finance.wallet.user.persistence.entity;
 
 import com.finance.common.constants.UrlMethodEnum;
+import com.finance.common.persistence.entity.BaseEntity;
 
 import java.util.Objects;
 
@@ -18,7 +19,7 @@ import lombok.Data;
 @Entity
 @Table(name = "ACCESS_URL")
 @Data
-public class AccessUrlEntity {
+public class AccessUrlEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)

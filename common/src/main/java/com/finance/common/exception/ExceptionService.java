@@ -46,6 +46,12 @@ public class ExceptionService {
         return new UnauthorizedException(errorDetails);
     }
 
+    public UnauthorizedException buildUnauthorizedException(final ApplicationError applicationError, final String... args) {
+        ErrorDetails errorDetails = buildErrorDetails(applicationError, args);
+
+        return new UnauthorizedException(errorDetails);
+    }
+
     public ErrorDetails buildErrorDetails(final ApplicationError applicationError, final String[] args) {
         return buildErrorDetails(applicationError, null, args);
     }

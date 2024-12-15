@@ -41,7 +41,6 @@ public class DatabaseServiceConfig implements ServiceConfiguration {
             .cacheServiceFactory(cacheServiceFactoryOptional.orElseThrow())
             .cacheName(cacheName)
             .type(ServiceConfigurationDTO.class)
-            .timeToLiveSeconds(86400)
             .build();
     }
 
