@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "user-svc")
 public interface UserClient {
     String SERVICE_BASE_URL = "/api/v1/user/internal";
-    java.lang.String USER_API = SERVICE_BASE_URL + "/";
+    java.lang.String USER_API = SERVICE_BASE_URL;
     java.lang.String ENDPOINT_API = SERVICE_BASE_URL + "/endpoint";
 
     @GetMapping(USER_API + "/username/{username}")
