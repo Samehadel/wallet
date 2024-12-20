@@ -1,6 +1,6 @@
 package com.finance.wallet.user.controller;
 
-import com.finance.common.dto.AccessUriDTO;
+import com.finance.common.dto.AccessUrlDTO;
 import com.finance.wallet.user.service.EndpointService;
 
 import java.util.List;
@@ -19,12 +19,12 @@ public class InternalEndpointController {
     private final EndpointService endpointService;
 
     @GetMapping
-    public List<AccessUriDTO> getPublicEndpoints() {
+    public List<AccessUrlDTO> getPublicEndpoints() {
         return endpointService.getPublicEndpoints();
     }
 
     @GetMapping("/username/{username}")
-    public List<AccessUriDTO> getUserEndpoints(@PathVariable("username") final String username) {
+    public List<AccessUrlDTO> getUserEndpoints(@PathVariable("username") final String username) {
         return endpointService.getUserEndpoints(username);
     }
 }

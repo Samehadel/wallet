@@ -73,5 +73,5 @@ public class UserDTO extends BaseDTO {
 
     private List<RoleDTO> roles;
 
-    private List<AccessUriDTO> accessUris;
+    private List<AccessUrlDTO> accessUris;
 }

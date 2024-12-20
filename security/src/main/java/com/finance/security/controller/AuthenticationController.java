@@ -21,5 +21,4 @@ public class AuthenticationController {
     public AuthResultDTO getAuthentication(@RequestBody AuthenticationRequest authenticationRequest) {
         return authenticator.authenticate(authenticationRequest);
     }
-
 }

@@ -3,7 +3,7 @@ package com.finance.wallet.user.service;
 import com.finance.common.constants.DatabaseConfigKeys;
 import com.finance.common.constants.UrlMethodEnum;
 import com.finance.common.constants.UserStatusEnum;
-import com.finance.common.dto.AccessUriDTO;
+import com.finance.common.dto.AccessUrlDTO;
 import com.finance.common.dto.UserDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.exception.SharedApplicationError;
@@ -93,7 +93,7 @@ public class UserService {
         return userMapper.mapToDTO(userEntity);
     }
     private UserDTO getMockUser(final String username) {
-        AccessUriDTO accessUri = AccessUriDTO.builder()
+        AccessUrlDTO accessUri = AccessUrlDTO.builder()
             .url("user/username/{username}")
             .method(UrlMethodEnum.GET)
             .build();

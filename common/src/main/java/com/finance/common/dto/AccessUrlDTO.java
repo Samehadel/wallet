@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class AccessUriDTO extends BaseDTO {
+public class AccessUrlDTO extends BaseDTO {
     private String url;
 
     private UrlMethodEnum method;

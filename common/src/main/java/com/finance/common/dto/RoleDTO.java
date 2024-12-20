@@ -20,5 +20,5 @@ public class RoleDTO extends BaseDTO {
 
     private String roleName;
 
-    private Set<AccessUriDTO> accessUrls;
+    private Set<AccessUrlDTO> accessUrls;
 }

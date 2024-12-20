@@ -1,17 +1,12 @@
 package com.finance.gateway.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.Payload;
 import com.finance.common.constants.CommonHeaders;
-import com.finance.common.dto.AuthResultDTO;
 import com.finance.gateway.dto.GwAuthorizationContext;
 import com.finance.gateway.service.AuthenticationService;
 
 import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -28,37 +23,36 @@ public class GwAuthorizationManager implements ReactiveAuthorizationManager<Auth
     private final AuthenticationService authenticationService;
 
     @Override
-    public Mono<AuthorizationDecision> check(final Mono<Authentication> authentication, final AuthorizationContext object) {
+    public Mono<AuthorizationDecision> check(final Mono<Authentication> authentication, final AuthorizationContext context) {
         return authentication
-            .flatMap(this::getAuthenticationDTOMono)
-            .map(authenticationResponse -> {
-                ServerHttpRequest request = object.getExchange().getRequest();
-                GwAuthorizationContext authenticationContext =
-                    authenticationService.getAuthenticationContext(authenticationResponse, request);
-
-                if (authenticationContext.authorizationDecision().isGranted()) {
-                    request.mutate()
-                        .header(CommonHeaders.X_USER, authenticationContext.walletUser())
-                        .headers(h -> h.remove(HttpHeaders.AUTHORIZATION))
-                        .build();
-                }
-
-                return authenticationContext.authorizationDecision();
-            })
+            .map(this::getAuthenticationDTOMono)
+            .flatMap(token -> processAuthenticationContext(token, context))
             .defaultIfEmpty(new AuthorizationDecision(false));
     }
 
-    private Mono<AuthResultDTO> getAuthenticationDTOMono(final Authentication a) {
-        final var jwt = new JWT();
-        final var username = Optional.ofNullable(a.getPrincipal())
-            .map(Object::toString)
-            .map(jwt::decodeJwt)
-            .map(Payload::getClaims)
-            .map(m -> m.get("username"))
-            .map(Claim::asString);
-        if (username.isEmpty()) {
-            return Mono.empty();
-        }
-        return authenticationService.getAuthenticationCall(username.get());
+    private String getAuthenticationDTOMono(final Authentication a) {
+        return Optional.ofNullable(a)
+            .map(auth -> auth.getCredentials().toString())
+            .orElse(null);
+    }
+
+    private Mono<AuthorizationDecision> processAuthenticationContext(final String token, final AuthorizationContext context) {
+        return authenticationService
+            .getAuthenticationContext(token, context.getExchange().getRequest())
+            .map(authContext -> {
+                if (authContext.authorizationDecision().isGranted()) {
+                    mutateRequest(context, authContext);
+                }
+                return authContext.authorizationDecision();
+            });
+    }
+
+    private void mutateRequest(final AuthorizationContext context, final GwAuthorizationContext authContext) {
+        context.getExchange()
+            .mutate()
+            .request(requestBuilder -> requestBuilder
+                .header(CommonHeaders.X_USER, authContext.walletUser())
+                .headers(headers -> headers.remove(HttpHeaders.AUTHORIZATION)))
+            .build();
     }
 }

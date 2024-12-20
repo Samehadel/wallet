@@ -22,7 +22,7 @@ public class AuthResultDTO {
 
     private UserDTO user;
 
-    private List<AccessUriDTO> accessUris;
+    private List<AccessUrlDTO> accessUris;
 
     private AuthResultEnum authResult;
 

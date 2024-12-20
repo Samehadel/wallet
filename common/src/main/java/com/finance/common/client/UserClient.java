@@ -1,7 +1,7 @@
 package com.finance.common.client;
 
 
-import com.finance.common.dto.AccessUriDTO;
+import com.finance.common.dto.AccessUrlDTO;
 import com.finance.common.dto.UserDTO;
 
 import java.util.List;
@@ -23,8 +23,8 @@ public interface UserClient {
     UserDTO getUserByMobile(@PathVariable("mobile") String mobile);
 
     @GetMapping(ENDPOINT_API)
-    List<AccessUriDTO> getPublicEndpoints();
+    List<AccessUrlDTO> getPublicEndpoints();
 
     @GetMapping(ENDPOINT_API + "/username/{username}")
-    List<AccessUriDTO> getUserEndpoints(@PathVariable("username") final String username);
+    List<AccessUrlDTO> getUserEndpoints(@PathVariable("username") final String username);
 }

@@ -23,11 +23,11 @@ public class AuthorizationManager {
     private final TokenService tokenService;
     private final UserTokenFactory userTokenFactory;
     private final ExceptionService exceptionService;
-    private final UserService userService;
+    private final UserAccessService userAccessService;
 
     public AuthResultDTO authorize(final AuthorizationRequest authRequest) {
         validateRequiredFields(authRequest);
-        if (userService.isPublicEndpoint(authRequest.getUrl(), authRequest.getMethod())) {
+        if (userAccessService.isPublicEndpoint(authRequest.getUrl(), authRequest.getMethod())) {
             return buildAuthResult(AuthResultEnum.AUTHORIZED);
         }
 
@@ -35,7 +35,7 @@ public class AuthorizationManager {
         UserTokenHolder userTokenHolder = userTokenFactory.getUserTokenHolder(username);
         validateToken(userTokenHolder, authRequest.getToken());
 
-        return userService.userHasAccess(username, authRequest.getUrl(), authRequest.getMethod())
+        return userAccessService.userHasAccess(username, authRequest.getUrl(), authRequest.getMethod())
             ? buildAuthResult(AuthResultEnum.AUTHORIZED)
             : buildAuthResult(AuthResultEnum.UNAUTHORIZED);
     }
