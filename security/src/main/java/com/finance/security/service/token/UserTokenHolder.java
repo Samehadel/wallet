@@ -1,6 +1,7 @@
 package com.finance.security.service.token;
 
 import com.finance.common.util.ObjectUtils;
+import com.finance.common.util.StringUtil;
 
 import java.time.LocalDateTime;
 
@@ -17,10 +18,10 @@ public class UserTokenHolder {
             && userToken.getExpirationTime().isBefore(LocalDateTime.now());
     }
 
-    public boolean sameToken(final String token) {
-        return !ObjectUtils.isNull(userToken)
-            && userToken.getToken() != null
-            && userToken.getToken().equals(token);
+    public boolean tokenNotEqual(final String token) {
+        return StringUtil.isNullOrEmpty(token)
+            || userToken == null
+            || !token.equals(userToken.getToken());
     }
 
     public boolean idle() {
@@ -31,5 +32,13 @@ public class UserTokenHolder {
 
     private boolean idleTimeApproached(final long maxIdleSeconds) {
         return userToken.getLastAccessTime().plusSeconds(maxIdleSeconds).isBefore(LocalDateTime.now());
+    }
+
+    public void updateLastAccessTime() {
+        userToken.setLastAccessTime(LocalDateTime.now());
+    }
+
+    UserToken getUserToken() {
+        return userToken;
     }
 }

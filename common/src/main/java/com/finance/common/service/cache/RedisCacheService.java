@@ -15,11 +15,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @ConditionalOnProperty(name = "enable.redis.cache", havingValue = "true")
-public class RedisCacheService<V extends Cacheable> implements CacheService<V> {
+class RedisCacheService<V extends Cacheable> implements CacheService<V> {
     private final RMapCache<String, V> mapCache;
     private final Class<V> type;
     private final long timeToLiveSec;
-
 
     @Override
     public void cache(String key, V value) {

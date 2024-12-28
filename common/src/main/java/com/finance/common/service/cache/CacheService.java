@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Sameh.Adel
  * @since 25/11/2024
  */
-public interface CacheService<V extends Cacheable> {
+interface CacheService<V extends Cacheable> {
     void cache(final String key, final V value);
 
     void cacheAll(final Map<String, V> map);

@@ -5,13 +5,12 @@ import com.finance.common.dto.Cacheable;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Log4j2
-@Builder
 public class CacheOperationService<V extends Cacheable> {
     private final CacheServiceFactory cacheServiceFactory;
     private final String cacheName;
@@ -22,7 +21,7 @@ public class CacheOperationService<V extends Cacheable> {
         CacheService<V> cacheService = getCacheService();
 
         if (cacheService == null) {
-            log.warn("Cache service not found for cache name [{}]", cacheName);
+            logServiceAbsenceWarnMessage();
             return;
         }
 
@@ -33,7 +32,7 @@ public class CacheOperationService<V extends Cacheable> {
         CacheService<V> cacheService = getCacheService();
 
         if (cacheService == null) {
-            log.warn("Cache service not found for cache name [{}]", cacheName);
+            logServiceAbsenceWarnMessage();
             return;
         }
 
@@ -44,7 +43,7 @@ public class CacheOperationService<V extends Cacheable> {
         CacheService<V> cacheService = getCacheService();
 
         if (cacheService == null) {
-            log.warn("Cache service not found for cache name [{}]", cacheName);
+            logServiceAbsenceWarnMessage();
             return null;
         }
 
@@ -55,11 +54,15 @@ public class CacheOperationService<V extends Cacheable> {
         CacheService<V> cacheService = getCacheService();
 
         if (cacheService == null) {
-            log.warn("Cache service not found for cache name [{}]", cacheName);
+            logServiceAbsenceWarnMessage();
             return null;
         }
 
         return cacheService.getAll();
+    }
+
+    private void logServiceAbsenceWarnMessage() {
+        log.warn("Cache service not found for cache name [{}]", this.cacheName);
     }
 
     private CacheService<V> getCacheService() {

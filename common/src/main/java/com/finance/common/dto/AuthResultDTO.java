@@ -27,4 +27,11 @@ public class AuthResultDTO {
     private AuthResultEnum authResult;
 
     private String token;
+
+    @Override
+    public String toString() {
+        return "{" +
+            "authResult=" + authResult +
+            '}';
+    }
 }

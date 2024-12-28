@@ -26,7 +26,7 @@ public class AuthorizationManager {
     private final UserAccessService userAccessService;
 
     public AuthResultDTO authorize(final AuthorizationRequest authRequest) {
-        validateRequiredFields(authRequest);
+        validateRequiredFieldsNotNull(authRequest);
         if (userAccessService.isPublicEndpoint(authRequest.getUrl(), authRequest.getMethod())) {
             return buildAuthResult(AuthResultEnum.AUTHORIZED);
         }
@@ -35,9 +35,22 @@ public class AuthorizationManager {
         UserTokenHolder userTokenHolder = userTokenFactory.getUserTokenHolder(username);
         validateToken(userTokenHolder, authRequest.getToken());
 
-        return userAccessService.userHasAccess(username, authRequest.getUrl(), authRequest.getMethod())
-            ? buildAuthResult(AuthResultEnum.AUTHORIZED)
-            : buildAuthResult(AuthResultEnum.UNAUTHORIZED);
+        AuthResultDTO authResult;
+        if (userAccessService.userHasAccess(username, authRequest.getUrl(), authRequest.getMethod())) {
+            authResult = buildAuthResult(AuthResultEnum.AUTHORIZED);
+            updateTokenLastAccessTime(userTokenHolder);
+        } else {
+            authResult = buildAuthResult(AuthResultEnum.UNAUTHORIZED);
+        }
+
+        return authResult;
+    }
+
+    private void validateRequiredFieldsNotNull(final AuthorizationRequest authRequest) {
+        if (ObjectUtils.anyNull(authRequest, authRequest.getMethod(), authRequest.getUrl(), authRequest.getToken())) {
+            log.error("Missing required fields in AuthorizationRequest: [{}]", authRequest);
+            throw new IllegalArgumentException("Missing required fields in AuthorizationRequest");
+        }
     }
 
     private String parseTokenForUsername(final String token) {
@@ -48,13 +61,6 @@ public class AuthorizationManager {
         }
 
         return username;
-    }
-
-    private void validateRequiredFields(final AuthorizationRequest authRequest) {
-        if (ObjectUtils.anyNull(authRequest, authRequest.getMethod(), authRequest.getUrl(), authRequest.getToken())) {
-            log.error("Missing required fields in AuthorizationRequest: [{}]", authRequest);
-            throw new IllegalArgumentException("Missing required fields in AuthorizationRequest");
-        }
     }
 
     private void validateToken(final UserTokenHolder userTokenHolder, final String requestToken) {
@@ -68,7 +74,7 @@ public class AuthorizationManager {
             throw exceptionService.buildUnauthorizedException(SecurityServiceError.TOKEN_EXPIRED);
         }
 
-        if (userTokenHolder.sameToken(requestToken)) {
+        if (userTokenHolder.tokenNotEqual(requestToken)) {
             log.error("Token mismatch");
             throw exceptionService.buildUnauthorizedException(SecurityServiceError.TOKEN_MISMATCH);
         }
@@ -83,5 +89,10 @@ public class AuthorizationManager {
         return AuthResultDTO.builder()
             .authResult(authResult)
             .build();
+    }
+
+    private void updateTokenLastAccessTime(final UserTokenHolder userTokenHolder) {
+        userTokenHolder.updateLastAccessTime();
+        userTokenFactory.sync(userTokenHolder);
     }
 }

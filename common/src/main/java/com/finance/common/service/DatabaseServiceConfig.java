@@ -4,10 +4,8 @@ import com.finance.common.dto.ServiceConfigurationDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.exception.SharedApplicationError;
 import com.finance.common.persistence.repository.ServiceConfigRepository;
+import com.finance.common.service.cache.CacheOperationFactory;
 import com.finance.common.service.cache.CacheOperationService;
-import com.finance.common.service.cache.CacheServiceFactory;
-
-import java.util.Optional;
 
 import jakarta.annotation.PostConstruct;
 
@@ -25,7 +23,7 @@ import lombok.extern.log4j.Log4j2;
 public class DatabaseServiceConfig implements ServiceConfiguration {
     private final ExceptionService exceptionService;
     private final ServiceConfigRepository serviceConfigurationRepository;
-    private final Optional<CacheServiceFactory> cacheServiceFactoryOptional;
+    private final CacheOperationFactory cacheOperationFactory;
 
     private CacheOperationService<ServiceConfigurationDTO> cacheOperationService;
 
@@ -37,11 +35,7 @@ public class DatabaseServiceConfig implements ServiceConfiguration {
 
     @PostConstruct
     public void initializeCacheOperation() {
-        cacheOperationService = CacheOperationService.<ServiceConfigurationDTO>builder()
-            .cacheServiceFactory(cacheServiceFactoryOptional.orElseThrow())
-            .cacheName(cacheName)
-            .type(ServiceConfigurationDTO.class)
-            .build();
+        cacheOperationService = cacheOperationFactory.createInstance(cacheName, ServiceConfigurationDTO.class, 120);
     }
 
     @Override

@@ -3,13 +3,12 @@ package com.finance.security.service.token;
 import com.finance.common.dto.UserDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.exception.SharedApplicationError;
+import com.finance.common.service.cache.CacheOperationFactory;
 import com.finance.common.service.cache.CacheOperationService;
-import com.finance.common.service.cache.CacheServiceFactory;
 import com.finance.common.util.ObjectUtils;
 import com.finance.security.service.TokenService;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import jakarta.annotation.PostConstruct;
 
@@ -25,7 +24,7 @@ import lombok.extern.log4j.Log4j2;
 public class UserTokenFactory {
     private final ExceptionService exceptionService;
     private final TokenService tokenService;
-    private final Optional<CacheServiceFactory> cacheServiceFactoryOptional;
+    private final CacheOperationFactory cacheOperationFactory;
 
     private CacheOperationService<UserToken> cacheOperationService;
 
@@ -40,12 +39,7 @@ public class UserTokenFactory {
 
     @PostConstruct
     public void initializeCacheOperation() {
-        this.cacheOperationService = CacheOperationService.<UserToken>builder()
-            .cacheServiceFactory(cacheServiceFactoryOptional.orElse(null))
-            .cacheName(userTokenCacheName)
-            .type(UserToken.class)
-            .timeToLiveSeconds(jwtExpirationSec)
-            .build();
+        this.cacheOperationService = cacheOperationFactory.createInstance(userTokenCacheName, UserToken.class, jwtExpirationSec);
     }
 
     public UserToken createUserToken(final UserDTO user) {
@@ -55,6 +49,7 @@ public class UserTokenFactory {
             .token(tokenService.generateToken(user.getUsername()))
             .userId(user.getId())
             .cif(user.getCif())
+            .username(user.getUsername())
             .lastAccessTime(LocalDateTime.now())
             .expirationTime(LocalDateTime.now().plusSeconds(jwtExpirationSec))
             .build();
@@ -83,7 +78,11 @@ public class UserTokenFactory {
     }
 
     private UserToken getUserTokenFromCache(final String username) {
-        log.info("Getting user token from cache for user [{}]", username);
         return cacheOperationService.get(username);
+    }
+
+    public void sync(final UserTokenHolder userTokenHolder) {
+        final UserToken userToken = userTokenHolder.getUserToken();
+        cacheOperationService.cache(userToken.getUsername(), userTokenHolder.getUserToken());
     }
 }

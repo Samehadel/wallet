@@ -2,7 +2,7 @@ package com.finance.gateway.security;
 
 import com.finance.common.constants.CommonHeaders;
 import com.finance.gateway.dto.GwAuthorizationContext;
-import com.finance.gateway.service.AuthenticationService;
+import com.finance.gateway.service.AuthorizationService;
 
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class GwAuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
-    private final AuthenticationService authenticationService;
+    private final AuthorizationService authorizationService;
 
     @Override
     public Mono<AuthorizationDecision> check(final Mono<Authentication> authentication, final AuthorizationContext context) {
@@ -37,7 +37,7 @@ public class GwAuthorizationManager implements ReactiveAuthorizationManager<Auth
     }
 
     private Mono<AuthorizationDecision> processAuthenticationContext(final String token, final AuthorizationContext context) {
-        return authenticationService
+        return authorizationService
             .getAuthenticationContext(token, context.getExchange().getRequest())
             .map(authContext -> {
                 if (authContext.authorizationDecision().isGranted()) {

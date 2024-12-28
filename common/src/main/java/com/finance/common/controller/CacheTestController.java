@@ -1,13 +1,11 @@
 package com.finance.common.controller;
 
 import com.finance.common.dto.CacheTestClass;
+import com.finance.common.service.cache.CacheOperationFactory;
 import com.finance.common.service.cache.CacheOperationService;
-import com.finance.common.service.cache.CacheService;
-import com.finance.common.service.cache.CacheServiceFactory;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,13 +25,8 @@ public class CacheTestController {
 
     private final CacheOperationService<CacheTestClass> cacheOperationService;
 
-    public CacheTestController(final Optional<CacheServiceFactory> cacheServiceFactoryOptional) {
-        this.cacheOperationService = CacheOperationService.<CacheTestClass>builder()
-            .cacheServiceFactory(cacheServiceFactoryOptional.orElse(null))
-            .cacheName(CACHE_NAME)
-            .type(CacheTestClass.class)
-            .timeToLiveSeconds(120)
-            .build();
+    public CacheTestController(final CacheOperationFactory cacheOperationFactory) {
+        this.cacheOperationService = cacheOperationFactory.createInstance(CACHE_NAME, CacheTestClass.class, 120);
     }
 
     @PostMapping

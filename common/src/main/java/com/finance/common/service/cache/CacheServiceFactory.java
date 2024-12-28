@@ -22,7 +22,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @DependsOn("redissonClient")
 @ConditionalOnBean(RedissonClient.class)
-public class CacheServiceFactory {
+class CacheServiceFactory {
     private final RedissonClient redissonClient;
     private final ExceptionService exceptionService;
     private final Map<String, CacheService<? extends Cacheable>> cacheServiceMap = new ConcurrentHashMap<>();

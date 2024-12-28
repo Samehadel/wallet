@@ -38,10 +38,14 @@ public class JwtService implements TokenService {
         return Jwts.builder()
             .subject(username)
             .issuedAt(new Date())
-            .expiration(new Date((new Date()).getTime() + jwtExpirationSec))
+            .expiration(getExpirationTime())
             .signWith(getSigningKey())
             .claims(Collections.emptyMap())
             .compact();
+    }
+
+    private Date getExpirationTime() {
+        return new Date(System.currentTimeMillis() + jwtExpirationSec * 1000);
     }
 
     private SecretKey getSigningKey() {
@@ -58,6 +62,7 @@ public class JwtService implements TokenService {
             Claims payload = getJWTClaims(token);
             return payload.getSubject();
         } catch (SignatureException exception) {
+            log.error("Failed to parse token due to [{}]", exception.getMessage());
             throw exceptionService.buildUnauthorizedException();
         }
     }
@@ -70,6 +75,7 @@ public class JwtService implements TokenService {
                 .parseSignedClaims(jwt)
                 .getPayload();
         } catch (Exception exception) {
+            log.error("Failed to parse token due to [{}]", exception.getMessage());
             throw exceptionService.buildUnauthorizedException();
         }
     }

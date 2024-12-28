@@ -24,4 +24,10 @@ public class UserToken implements Cacheable {
     private Long userId;
 
     private String cif;
+
+    private String username;
+
+    void setLastAccessTime(final LocalDateTime lastAccessTime) {
+        this.lastAccessTime = lastAccessTime;
+    }
 }
