@@ -1,14 +1,13 @@
 package com.finance.wallet.user.service;
 
 import com.finance.common.constants.DatabaseConfigKeys;
-import com.finance.common.constants.UrlMethodEnum;
 import com.finance.common.constants.UserStatusEnum;
-import com.finance.common.dto.AccessUrlDTO;
 import com.finance.common.dto.UserDTO;
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.exception.SharedApplicationError;
 import com.finance.common.service.PasswordEncryptor;
 import com.finance.common.service.ServiceConfiguration;
+import com.finance.common.service.request.RequestInfoValidator;
 import com.finance.common.util.StringUtil;
 import com.finance.wallet.user.exception.UserServiceError;
 import com.finance.wallet.user.mapper.UserMapper;
@@ -16,9 +15,7 @@ import com.finance.wallet.user.persistence.entity.UserEntity;
 import com.finance.wallet.user.persistence.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -33,9 +30,7 @@ public class UserService {
     private final ExceptionService exceptionService;
     private final PasswordEncryptor passwordEncryptor;
     private final ServiceConfiguration serviceConfiguration;
-
-    @Value("${user.mock.enable:false}")
-    private boolean mockUserEnabled;
+    private final RequestInfoValidator requestInfoValidator;
 
     public UserDTO registerCustomerUser(final UserDTO userDTO) {
         log.info("Registering user");
@@ -61,7 +56,16 @@ public class UserService {
         }
     }
 
-    public UserDTO getByUsername(final String username) {
+    public UserDTO getPublicUserByUsername(final String username) {
+        requestInfoValidator.validateByUsernames(username);
+        return getByUsername(username);
+    }
+
+    public UserDTO getInternalUserByUsername(final String username) {
+        return getByUsername(username);
+    }
+
+    private UserDTO getByUsername(final String username) {
         log.info("Getting user by username: {}", username);
         final var userEntity = getUserEntityByUsername(username);
 
@@ -80,30 +84,16 @@ public class UserService {
             .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
     }
 
-    public UserDTO getByMobile(final String mobile) {
+    public UserDTO getInternalUserByMobile(final String mobile) {
+        return getByMobile(mobile);
+    }
+
+    private UserDTO getByMobile(final String mobile) {
         log.info("Getting user by mobile: {}", mobile);
-
-        if (mockUserEnabled) {
-            return getMockUser("mockUser " + mobile);
-        }
-
         final var userEntity = userRepository.findByMobile(mobile)
             .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
 
         return userMapper.mapToDTO(userEntity);
-    }
-    private UserDTO getMockUser(final String username) {
-        AccessUrlDTO accessUri = AccessUrlDTO.builder()
-            .url("user/username/{username}")
-            .method(UrlMethodEnum.GET)
-            .build();
-
-        return UserDTO.builder()
-            .username(username)
-            .email("sample@example.com")
-            .status(UserStatusEnum.ACTIVE)
-            .accessUris(List.of(accessUri))
-            .build();
     }
 
     private UserDTO block(final Long userId) {

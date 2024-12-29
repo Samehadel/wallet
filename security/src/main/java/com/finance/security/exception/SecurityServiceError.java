@@ -10,7 +10,8 @@ import lombok.RequiredArgsConstructor;
 public enum SecurityServiceError implements ApplicationError {
     TOKEN_EXPIRED("SEC_001_TOKEN_EXPIRED"),
     TOKEN_MISMATCH("SEC_002_TOKEN_MISMATCH"),
-    TOKEN_IDLE("SEC_003_TOKEN_IDLE"),;
+    TOKEN_IDLE("SEC_003_TOKEN_IDLE"),
+    INVALID_TOKEN("SEC_004_INVALID_TOKEN"),;
 
 
     private final String errorCode;

@@ -18,11 +18,11 @@ public class InternalUserController {
 
     @GetMapping("/username/{username}")
     public UserDTO getUserByUsername(@PathVariable("username") final String username) {
-        return userService.getByUsername(username);
+        return userService.getInternalUserByUsername(username);
     }
 
     @GetMapping("/mobile/{mobile}")
     public UserDTO getUserByMobile(@PathVariable("mobile") final String mobile) {
-        return userService.getByMobile(mobile);
+        return userService.getInternalUserByMobile(mobile);
     }
 }

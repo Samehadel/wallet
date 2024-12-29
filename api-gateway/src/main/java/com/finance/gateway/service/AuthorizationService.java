@@ -67,8 +67,7 @@ public class AuthorizationService {
     }
 
     private Mono<AuthResultDTO> authorize(final AuthorizationRequest authorizationRequest) {
-        log.info("Request body: {}", objectMapper);
-
+        log.info("Request body: {}", authorizationRequest);
         return webClient.post()
             .uri(securitySvcUrl)
             .contentType(MediaType.APPLICATION_JSON)

@@ -13,7 +13,7 @@ public class UserTokenHolder {
     private final UserToken userToken;
 
     public boolean expired() {
-        return !ObjectUtils.isNull(userToken)
+        return ObjectUtils.notNull(userToken)
             && userToken.getExpirationTime() != null
             && userToken.getExpirationTime().isBefore(LocalDateTime.now());
     }
@@ -25,7 +25,7 @@ public class UserTokenHolder {
     }
 
     public boolean idle(final long maxIdleTimeSeconds) {
-        return !ObjectUtils.isNull(userToken)
+        return ObjectUtils.notNull(userToken)
             && userToken.getLastAccessTime() != null
             && idleTimeApproached(maxIdleTimeSeconds);
     }

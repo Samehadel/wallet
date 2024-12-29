@@ -2,6 +2,7 @@ package com.finance.security.service;
 
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.util.StringUtil;
+import com.finance.security.exception.SecurityServiceError;
 
 import java.util.Collections;
 import java.util.Date;
@@ -63,7 +64,7 @@ public class JwtService implements TokenService {
             return payload.getSubject();
         } catch (SignatureException exception) {
             log.error("Failed to parse token due to [{}]", exception.getMessage());
-            throw exceptionService.buildUnauthorizedException();
+            throw exceptionService.buildUnauthorizedException(SecurityServiceError.INVALID_TOKEN);
         }
     }
 
@@ -76,7 +77,7 @@ public class JwtService implements TokenService {
                 .getPayload();
         } catch (Exception exception) {
             log.error("Failed to parse token due to [{}]", exception.getMessage());
-            throw exceptionService.buildUnauthorizedException();
+            throw exceptionService.buildUnauthorizedException(SecurityServiceError.TOKEN_EXPIRED);
         }
     }
 }
