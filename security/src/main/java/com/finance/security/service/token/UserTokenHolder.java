@@ -1,5 +1,6 @@
 package com.finance.security.service.token;
 
+import com.finance.common.dto.UserDTO;
 import com.finance.common.util.ObjectUtils;
 import com.finance.common.util.StringUtil;
 
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserTokenHolder {
     private final UserToken userToken;
-    private final long maxIdleTimeSeconds;
 
     public boolean expired() {
         return !ObjectUtils.isNull(userToken)
@@ -24,7 +24,7 @@ public class UserTokenHolder {
             || !token.equals(userToken.getToken());
     }
 
-    public boolean idle() {
+    public boolean idle(final long maxIdleTimeSeconds) {
         return !ObjectUtils.isNull(userToken)
             && userToken.getLastAccessTime() != null
             && idleTimeApproached(maxIdleTimeSeconds);
@@ -36,6 +36,18 @@ public class UserTokenHolder {
 
     public void updateLastAccessTime() {
         userToken.setLastAccessTime(LocalDateTime.now());
+    }
+
+    public String getUsername() {
+        return userToken.getUsername();
+    }
+
+    public UserDTO buildUserFromToken() {
+        return UserDTO.builder()
+            .id(userToken.getUserId())
+            .cif(userToken.getCif())
+            .username(userToken.getUsername())
+            .build();
     }
 
     UserToken getUserToken() {

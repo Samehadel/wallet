@@ -12,8 +12,7 @@ import com.finance.common.service.PasswordEncryptor;
 import com.finance.common.util.CollectionUtil;
 import com.finance.common.util.StringUtil;
 import com.finance.security.event.UserEventProducer;
-import com.finance.security.service.token.UserToken;
-import com.finance.security.service.token.UserTokenFactory;
+import com.finance.security.service.token.UserTokenService;
 
 import org.springframework.stereotype.Service;
 
@@ -23,12 +22,12 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class Authenticator {
+public class AuthenticationService {
     private final PasswordEncryptor passwordEncryptor;
     private final ExceptionService exceptionService;
     private final UserClient userClient;
     private final UserEventProducer userEventProducer;
-    private final UserTokenFactory userTokenFactory;
+    private final UserTokenService userTokenService;
 
     public AuthResultDTO authenticate(final AuthenticationRequest authenticationRequest) {
         final UserDTO user = fetchUser(authenticationRequest);
@@ -52,9 +51,9 @@ public class Authenticator {
             return createAuthResult(AuthResultEnum.INVALID_USER_STATUS);
         }
 
-        UserToken userToken = userTokenFactory.createUserToken(user);
+        String userToken = userTokenService.createUserToken(user);
         updateLastLoginDate(user.getId());
-        return createAuthResult(AuthResultEnum.AUTHENTICATED, userToken.getToken());
+        return createAuthResult(AuthResultEnum.AUTHENTICATED, userToken);
     }
 
     private boolean passwordMatch(final char[] userHashedPassword, final char[] authenticationPassword) {

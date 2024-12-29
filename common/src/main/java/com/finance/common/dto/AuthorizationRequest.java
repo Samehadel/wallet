@@ -12,11 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class AuthorizationRequest {
-    private String username;
+    private String token;
 
     private UrlMethodEnum method;
 
     private String url;
-
-    private String token;
 }

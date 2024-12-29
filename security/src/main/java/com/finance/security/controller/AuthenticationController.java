@@ -2,7 +2,7 @@ package com.finance.security.controller;
 
 import com.finance.common.dto.AuthResultDTO;
 import com.finance.common.dto.AuthenticationRequest;
-import com.finance.security.service.Authenticator;
+import com.finance.security.service.AuthenticationService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,10 +15,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/authenticate")
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private final Authenticator authenticator;
+    private final AuthenticationService authenticationService;
 
     @PostMapping
     public AuthResultDTO getAuthentication(@RequestBody AuthenticationRequest authenticationRequest) {
-        return authenticator.authenticate(authenticationRequest);
+        return authenticationService.authenticate(authenticationRequest);
     }
 }

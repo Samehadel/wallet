@@ -2,7 +2,7 @@ package com.finance.security.controller;
 
 import com.finance.common.dto.AuthResultDTO;
 import com.finance.common.dto.AuthorizationRequest;
-import com.finance.security.service.AuthorizationManager;
+import com.finance.security.service.AuthorizationService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,10 +15,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/internal/authorization")
 @RequiredArgsConstructor
 public class AuthorizationController {
-    private final AuthorizationManager authorizationManager;
+    private final AuthorizationService authorizationService;
 
     @PostMapping
     public AuthResultDTO authorize(@RequestBody final AuthorizationRequest authRequest) {
-        return authorizationManager.authorize(authRequest);
+        return authorizationService.authorize(authRequest);
     }
 }
