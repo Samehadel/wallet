@@ -46,4 +46,11 @@ public class GlobalExceptionHandler {
 
 		return ApiResponseBuilder.buildValidationErrorResponse(errors);
 	}
+
+	@ExceptionHandler(UnauthorizedException.class)
+	public ResponseEntity<ApiResponse<Void>> handleUnauthorizedException(final UnauthorizedException e) {
+		log.error("Error code: {}, Error message: {}", e.getErrorDetails().errorCode(), e.getErrorDetails().errorMessage());
+
+		return ApiResponseBuilder.buildFailedResponse(e);
+	}
 }

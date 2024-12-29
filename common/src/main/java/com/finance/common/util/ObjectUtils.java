@@ -14,11 +14,15 @@ public class ObjectUtils {
         return false;
     }
 
-    public static boolean isNull(final Object object) {
-        return object == null;
-    }
-
     public static boolean notNull(final Object object) {
         return object != null;
+    }
+
+    public static boolean equals(final Object o1, final Object o2) {
+        if (anyNull(o1, o2)) {
+            return false;
+        }
+
+        return (o1 == o2) || o1.equals(o2);
     }
 }
