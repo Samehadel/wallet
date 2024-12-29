@@ -126,7 +126,7 @@ public class UserService {
         userRepository.save(userEntity);
     }
 
-    public int incrementFailedLoginTrials(final Long userId) {
+    public void incrementFailedLoginTrials(final Long userId) {
         log.info("Incrementing login trials for user with id: {}", userId);
         final var userEntity = userRepository.findById(userId)
             .orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND));
@@ -135,8 +135,6 @@ public class UserService {
         userEntity.setLoginTrials(loginTrials);
         lockUserIfMaxTrialsReached(userEntity);
         userRepository.save(userEntity);
-
-        return loginTrials;
     }
 
     private void lockUserIfMaxTrialsReached(final UserEntity userEntity) {
