@@ -2,7 +2,8 @@ package com.finance.wallet.user.controller;
 
 import com.finance.common.constants.RestGroups;
 import com.finance.common.dto.UserDTO;
-import com.finance.wallet.user.service.UserService;
+import com.finance.wallet.user.service.UserInfoService;
+import com.finance.wallet.user.service.UserRegistrationService;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,15 +19,16 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/public")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final UserInfoService userInfoService;
+    private final UserRegistrationService userRegistrationService;
 
     @PostMapping("/register")
     public UserDTO register(@RequestBody @Validated(RestGroups.Create.class) final UserDTO userDTO) {
-        return userService.registerCustomerUser(userDTO);
+        return userRegistrationService.registerCustomerUser(userDTO);
     }
 
     @GetMapping("/username/{username}")
     public UserDTO getUserByUsername(@PathVariable final String username) {
-        return userService.getPublicUserByUsername(username);
+        return userInfoService.getPublicUserByUsername(username);
     }
 }

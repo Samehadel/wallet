@@ -5,7 +5,7 @@ import com.finance.common.event.schema.user.EventTypes;
 import com.finance.common.event.schema.user.UserStatusMessage;
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.exception.SharedApplicationError;
-import com.finance.wallet.user.service.UserService;
+import com.finance.wallet.user.service.UserStateService;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,18 +16,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserEventConsumer {
-    private final UserService userService;
+    private final UserStateService userStateService;
     private final ExceptionService exceptionService;
 
     @KafkaListener(topics = TopicsNames.USER_STATUS_UPDATE_TOPIC)
-    public void consumeUserStateEvent(final byte[] message) {
+    public void consumeUserEvent(final byte[] message) {
         try {
             UserStatusMessage userStatusMessage = UserStatusMessage.parseFrom(message);
 
             if (userStatusMessage.getEventType() == EventTypes.FAILED_LOGIN_ATTEMPT) {
-                userService.incrementFailedLoginTrials(userStatusMessage.getUserId());
+                userStateService.incrementFailedLoginTrials(userStatusMessage.getUserId());
             } else if (userStatusMessage.getEventType() == EventTypes.SUCCESSFUL_LOGIN) {
-                userService.updateLastLoginDate(userStatusMessage.getUserId());
+                userStateService.updateLastLoginDate(userStatusMessage.getUserId());
             }
 
         } catch (InvalidProtocolBufferException e) {
