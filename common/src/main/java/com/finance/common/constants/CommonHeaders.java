@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 public final class CommonHeaders {
 
     public static final String X_USER = "X-User";
-    public static final String X_TOKEN = "X-Token";
-    public static final String X_CHANNEL_ID = "X-Channel-Id";
+    public static final String X_REQUEST_SOURCE = "x-Request-Source";
+
 }

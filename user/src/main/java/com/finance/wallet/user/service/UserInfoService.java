@@ -23,39 +23,37 @@ public class UserInfoService {
     private final ExceptionService exceptionService;
     private final RequestInfoValidator requestInfoValidator;
 
-    public UserDTO getPublicUserByUsername(final String username) {
-        requestInfoValidator.validateByUsername(username);
-        return getByUsername(username);
-    }
-
-    public UserDTO getInternalUserByUsername(final String username) {
-        return getByUsername(username);
-    }
-
-    private UserDTO getByUsername(final String username) {
+    /**
+     * Find the user by username.
+     * This method apply request validation because it's intended to be used for public communication.
+     *
+     * @param username the username to find the user with.
+     * @return userDTO for the given username
+     */
+    public UserDTO findByUsername(final String username) {
         log.info("Getting user by username: {}", username);
-        final var userEntity = getUserEntityByUsername(username);
+
+        requestInfoValidator.validateByUsername(username);
+        final var userEntity = findByUsernameInDB(username);
 
         return mapToUserDTO(userEntity);
     }
 
-    private UserEntity getUserEntityByUsername(final String username) {
+    private UserEntity findByUsernameInDB(final String username) {
         return userRepository.findByUsername(username)
             .orElseThrow(this::getUserNotFoundException);
     }
 
-    public UserDTO getInternalUserByMobile(final String mobile) {
-        return getByMobile(mobile);
-    }
-
-    private UserDTO getByMobile(final String mobile) {
+    public UserDTO findByMobile(final String mobile) {
         log.info("Getting user by mobile: {}", mobile);
-        final var userEntity = getUserEntityByMobile(mobile);
+
+        requestInfoValidator.validateByMobile(mobile);
+        final var userEntity = findByMobileInDB(mobile);
 
         return mapToUserDTO(userEntity);
     }
 
-    private UserEntity getUserEntityByMobile(final String mobile) {
+    private UserEntity findByMobileInDB(final String mobile) {
         return userRepository.findByMobile(mobile)
             .orElseThrow(this::getUserNotFoundException);
     }

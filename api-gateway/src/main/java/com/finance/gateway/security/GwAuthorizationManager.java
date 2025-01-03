@@ -1,6 +1,7 @@
 package com.finance.gateway.security;
 
 import com.finance.common.constants.CommonHeaders;
+import com.finance.common.constants.RequestSource;
 import com.finance.gateway.dto.GwAuthorizationContext;
 import com.finance.gateway.service.AuthorizationService;
 
@@ -52,6 +53,7 @@ public class GwAuthorizationManager implements ReactiveAuthorizationManager<Auth
             .mutate()
             .request(requestBuilder -> requestBuilder
                 .header(CommonHeaders.X_USER, authContext.walletUser())
+                .header(CommonHeaders.X_REQUEST_SOURCE, RequestSource.EXTERNAL.getValue())
                 .headers(headers -> headers.remove(HttpHeaders.AUTHORIZATION)))
             .build();
     }

@@ -14,14 +14,25 @@ public final class RequestInfoValidator {
     private final RequestInfoService requestInfoService;
     private final ExceptionService exceptionService;
 
-    public void validateByUsername(final String expectedUsername) {
-        if (requestInfoService.getRequestUser() == null) {
-            throw exceptionService.buildUnauthorizedException(SharedApplicationError.UNAUTHORIZED_USER_NOT_FOUND);
-        }
-
+    public void validateByUsername(final String inputUsername) {
         String requestUsername = requestInfoService.getRequestUsername();
-        if (!ObjectUtils.equals(expectedUsername, requestUsername)) {
-            throw exceptionService.buildUnauthorizedException(SharedApplicationError.UNAUTHORIZED_USERNAME_MISMATCH);
+        validateObjectsMatch(requestUsername, inputUsername);
+    }
+    
+    public void validateByMobile(final String inputMobile) {
+        String requestMobile = requestInfoService.getRequestMobile();
+        validateObjectsMatch(requestMobile, inputMobile);
+    }
+    
+    private void validateObjectsMatch(final Object expected, final Object actual) {
+        boolean objectsMatch = skipValidation() || ObjectUtils.equals(expected, actual);
+
+        if (!objectsMatch) {
+            throw exceptionService.buildUnauthorizedException(SharedApplicationError.UNAUTHORIZED_DATA_ACCESS);
         }
+    }
+
+    private boolean skipValidation() {
+        return requestInfoService.internalRequest();
     }
 }
