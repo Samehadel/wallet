@@ -1,17 +1,16 @@
 package com.finance.common.exception;
 
+import com.finance.common.service.LocalizedMessageSource;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class ExceptionService {
-    private final MessageSource messageSource;
+    private final LocalizedMessageSource messageSource;
 
     @Value("${spring.application.name}")
     private String serviceName;
@@ -40,12 +39,6 @@ public class ExceptionService {
         return new InternalException(errorDetails);
     }
 
-    public UnauthorizedException buildUnauthorizedException() {
-        ErrorDetails errorDetails = buildErrorDetails(SharedApplicationError.UNAUTHORIZED, null);
-
-        return new UnauthorizedException(errorDetails);
-    }
-
     public UnauthorizedException buildUnauthorizedException(final ApplicationError applicationError, final String... args) {
         ErrorDetails errorDetails = buildErrorDetails(applicationError, args);
 
@@ -57,7 +50,7 @@ public class ExceptionService {
     }
 
     private ErrorDetails buildErrorDetails(final ApplicationError applicationError, final ErrorReference errorReference, final String[] args) {
-        String errorMessage = messageSource.getMessage(applicationError.getErrorCode(), args, LocaleContextHolder.getLocale());
+        String errorMessage = messageSource.getLocalizedMessage(applicationError.getErrorCode(), args);
 
         if (errorReference != null) {
             errorMessage = errorMessage + " " + errorReference.getErrorReference();
