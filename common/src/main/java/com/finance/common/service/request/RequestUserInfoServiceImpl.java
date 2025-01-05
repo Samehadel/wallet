@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RequestInfoServiceImpl implements RequestInfoService {
+public class RequestUserInfoServiceImpl implements RequestUserInfoService {
     private final HttpServletRequest httpServletRequest;
     private final ObjectMapper objectMapper;
 

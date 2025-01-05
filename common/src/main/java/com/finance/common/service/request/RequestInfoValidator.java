@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public final class RequestInfoValidator {
-    private final RequestInfoService requestInfoService;
+    private final RequestUserInfoService requestInfoService;
     private final ExceptionService exceptionService;
 
     public void validateByUsername(final String inputUsername) {

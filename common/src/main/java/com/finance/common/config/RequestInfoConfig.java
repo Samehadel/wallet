@@ -1,8 +1,8 @@
 package com.finance.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.finance.common.service.request.RequestInfoService;
-import com.finance.common.service.request.RequestInfoServiceImpl;
+import com.finance.common.service.request.RequestUserInfoService;
+import com.finance.common.service.request.RequestUserInfoServiceImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,10 +18,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RequestInfoConfig {
 
-    @ConditionalOnMissingBean(RequestInfoService.class)
+    @ConditionalOnMissingBean(RequestUserInfoService.class)
     @RequestScope(proxyMode = ScopedProxyMode.INTERFACES)
     @Bean
-    public RequestInfoService requestInfoService(final HttpServletRequest request, final ObjectMapper objectMapper) {
-        return new RequestInfoServiceImpl(request, objectMapper);
+    public RequestUserInfoService requestInfoService(final HttpServletRequest request, final ObjectMapper objectMapper) {
+        return new RequestUserInfoServiceImpl(request, objectMapper);
     }
 }
