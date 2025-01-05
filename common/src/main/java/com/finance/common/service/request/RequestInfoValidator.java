@@ -23,6 +23,11 @@ public final class RequestInfoValidator {
         String requestMobile = requestInfoService.getRequestMobile();
         validateObjectsMatch(requestMobile, inputMobile);
     }
+
+    public void validateByCif(final String inputCif) {
+        String requestCif = requestInfoService.getRequestCif();
+        validateObjectsMatch(requestCif, inputCif);
+    }
     
     private void validateObjectsMatch(final Object expected, final Object actual) {
         boolean objectsMatch = skipValidation() || ObjectUtils.equals(expected, actual);
