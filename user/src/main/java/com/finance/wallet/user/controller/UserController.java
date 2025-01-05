@@ -29,6 +29,6 @@ public class UserController {
 
     @GetMapping("/username/{username}")
     public UserDTO getUserByUsername(@PathVariable final String username) {
-        return userInfoService.findByUsername(username);
+        return userInfoService.findByUsernameExcludeSensitiveInfo(username);
     }
 }

@@ -21,6 +21,11 @@ public interface UserMapper extends GlobalMapper<UserEntity, UserDTO> {
         UserDTO dto = mapToDTO(entity);
         if (excludeSensitiveData) {
             dto.setPassword(null);
+            dto.setLastLoginDate(null);
+            dto.setActivated(null);
+            dto.setActivatedAt(null);
+            dto.setAccessUris(null);
+            dto.setStatusUpdatedAt(null);
         }
 
         return dto;

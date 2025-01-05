@@ -27,6 +27,7 @@ public class GwAuthorizationManager implements ReactiveAuthorizationManager<Auth
     public Mono<AuthorizationDecision> check(final Mono<Authentication> authentication, final AuthorizationContext context) {
         return authentication
             .map(this::getAuthenticationDTOMono)
+            .defaultIfEmpty("")
             .flatMap(token -> processAuthenticationContext(token, context))
             .defaultIfEmpty(new AuthorizationDecision(false));
     }

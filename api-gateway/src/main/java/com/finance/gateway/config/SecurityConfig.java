@@ -1,14 +1,16 @@
-package com.finance.gateway.security;
+package com.finance.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +29,8 @@ public class SecurityConfig {
         final ServerAccessDeniedHandler accessDeniedHandler) {
 
         return http
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
             .oauth2ResourceServer(resourceServerSpec ->
                 resourceServerSpec
                     .authenticationManagerResolver(c -> Mono.just(Mono::just))
@@ -35,15 +39,17 @@ public class SecurityConfig {
             )
             .authorizeExchange(authorizeExchangeSpec ->
                 authorizeExchangeSpec
-                    .pathMatchers(
+                    /*.pathMatchers(
                         "/actuator/health",
                         "/actuator/health/**",
                         "/actuator/prometheus",
                         "/unauthenticated",
                         "/oauth2/**",
                         "/auth/login/**",
-                        "/user/register/**").permitAll()
+                        "/user/register/**").permitAll()*/
                     .anyExchange().access(authorizationManager)
-            ).build();
+            )
+            .addFilterAt((exchange, chain) -> chain.filter(exchange), SecurityWebFiltersOrder.CSRF)
+            .build();
     }
 }

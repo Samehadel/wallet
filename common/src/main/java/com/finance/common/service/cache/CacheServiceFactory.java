@@ -36,13 +36,6 @@ class CacheServiceFactory {
         log.info("Cache service factory initialized with default ttl [{}]", this.defaultTimeToLiveSeconds);
     }
 
-    public <V extends Cacheable> CacheService<V> buildCacheInstance(final String cacheName, final Class<V> type) {
-        if (ObjectUtils.anyNull(cacheName, type)) {
-            throw exceptionService.buildInternalExceptionWithReference(SharedApplicationError.MISSING_REQUIRED_FIELD, "cache name or type");
-        }
-        return buildCacheInstance(cacheName, type, defaultTimeToLiveSeconds);
-    }
-
     @SuppressWarnings("unchecked")
     public <V extends Cacheable> CacheService<V> buildCacheInstance(final String cacheName, final Class<V> type, final long customTtlSeconds) {
         log.debug("Building cache service for cache name [{}], type [{}], time to live [{}]", cacheName, type, customTtlSeconds);

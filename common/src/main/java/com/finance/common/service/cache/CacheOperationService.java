@@ -18,7 +18,7 @@ public class CacheOperationService<V extends Cacheable> {
     private final long timeToLiveSeconds;
 
     public void cache(final String key, final V value) {
-        CacheService<V> cacheService = getCacheService();
+        CacheService<V> cacheService = buildCacheService();
 
         if (cacheService == null) {
             logServiceAbsenceWarnMessage();
@@ -29,7 +29,7 @@ public class CacheOperationService<V extends Cacheable> {
     }
 
     public void cacheAll(final Map<String, V> map) {
-        CacheService<V> cacheService = getCacheService();
+        CacheService<V> cacheService = buildCacheService();
 
         if (cacheService == null) {
             logServiceAbsenceWarnMessage();
@@ -40,7 +40,7 @@ public class CacheOperationService<V extends Cacheable> {
     }
 
     public V get(final String key) {
-        CacheService<V> cacheService = getCacheService();
+        CacheService<V> cacheService = buildCacheService();
 
         if (cacheService == null) {
             logServiceAbsenceWarnMessage();
@@ -51,7 +51,7 @@ public class CacheOperationService<V extends Cacheable> {
     }
 
     public List<V> getAll() {
-        CacheService<V> cacheService = getCacheService();
+        CacheService<V> cacheService = buildCacheService();
 
         if (cacheService == null) {
             logServiceAbsenceWarnMessage();
@@ -61,16 +61,16 @@ public class CacheOperationService<V extends Cacheable> {
         return cacheService.getAll();
     }
 
-    private void logServiceAbsenceWarnMessage() {
-        log.warn("Cache service not found for cache name [{}]", this.cacheName);
-    }
-
-    private CacheService<V> getCacheService() {
+    private CacheService<V> buildCacheService() {
         if (cacheServiceFactory == null) {
             log.warn("Cache service factory not found");
             return null;
         }
 
         return cacheServiceFactory.buildCacheInstance(cacheName, type, timeToLiveSeconds);
+    }
+
+    private void logServiceAbsenceWarnMessage() {
+        log.warn("Cache service not found for cache name [{}]", this.cacheName);
     }
 }

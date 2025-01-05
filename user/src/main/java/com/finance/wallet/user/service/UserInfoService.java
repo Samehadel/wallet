@@ -58,6 +58,12 @@ public class UserInfoService {
             .orElseThrow(this::getUserNotFoundException);
     }
 
+    public UserDTO findByUsernameExcludeSensitiveInfo(final String username) {
+        log.info("Getting user by username: {}", username);
+        final var userEntity = findByUsernameInDB(username);
+
+        return userMapper.mapToDTO(userEntity, true);
+    }
     public UserDTO findByCif(final String cif) {
         log.info("Getting user by cif: {}", cif);
 

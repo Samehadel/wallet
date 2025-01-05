@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finance.common.constants.CommonHeaders;
 import com.finance.common.constants.RequestSource;
 import com.finance.common.dto.UserDTO;
+import com.finance.common.util.StringUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -17,6 +18,10 @@ public class RequestUserInfoServiceImpl implements RequestUserInfoService {
     @Override
     public boolean internalRequest() {
         String requestSourceHeader = httpServletRequest.getHeader(CommonHeaders.X_REQUEST_SOURCE);
+        if (StringUtil.isNullOrEmpty(requestSourceHeader)) {
+            return true;
+        }
+
         RequestSource requestSourceValue = RequestSource.valueOf(requestSourceHeader);
 
         return requestSourceValue == RequestSource.INTERNAL;

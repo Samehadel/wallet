@@ -27,12 +27,13 @@ public class AuthorizationService {
 
     public AuthResultDTO authorize(final AuthorizationRequest authRequest) {
         validateRequiredFieldsNotNull(authRequest);
-        UserTokenHolder userTokenHolder = userTokenService.getUserToken(authRequest.getToken());
-        tokenValidationService.validateToken(userTokenHolder, authRequest.getToken());
 
         if (userAccessService.isPublicEndpoint(authRequest.getUrl(), authRequest.getMethod())) {
-            return buildAuthorizedResult(userTokenHolder.buildUserFromToken());
+            return buildAuthorizedResult();
         }
+
+        UserTokenHolder userTokenHolder = userTokenService.getUserToken(authRequest.getToken());
+        tokenValidationService.validateToken(userTokenHolder, authRequest.getToken());
 
         AuthResultDTO authResult;
         if (userAccessService.userHasAccess(userTokenHolder.getUsername(), authRequest.getUrl(), authRequest.getMethod())) {
@@ -46,11 +47,16 @@ public class AuthorizationService {
     }
 
     private void validateRequiredFieldsNotNull(final AuthorizationRequest authRequest) {
-        if (ObjectUtils.anyNull(authRequest, authRequest.getMethod(), authRequest.getUrl(), authRequest.getToken())) {
+        if (ObjectUtils.anyNull(authRequest, authRequest.getMethod(), authRequest.getUrl())) {
             log.error("Missing required fields in AuthorizationRequest: [{}]", authRequest);
             throw new IllegalArgumentException("Missing required fields in AuthorizationRequest");
         }
     }
+
+    private AuthResultDTO buildAuthorizedResult() {
+        return buildAuthResult(AuthResultEnum.AUTHORIZED, null);
+    }
+
 
     private AuthResultDTO buildAuthorizedResult(final UserDTO user) {
         return buildAuthResult(AuthResultEnum.AUTHORIZED, user);
