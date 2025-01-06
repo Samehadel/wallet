@@ -27,6 +27,12 @@ public class ExceptionService {
         return new BadRequestException(errorDetails);
     }
 
+    public ServiceUnavailableException buildServiceUnavailableException(final ApplicationError applicationError, final String... args) {
+        ErrorDetails errorDetails = buildErrorDetails(applicationError, args);
+
+        return new ServiceUnavailableException(errorDetails);
+    }
+
     public InternalException buildInternalException(final ApplicationError applicationError, final String... args) {
         ErrorDetails errorDetails = buildErrorDetails(applicationError, args);
 
