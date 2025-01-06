@@ -62,7 +62,7 @@ public class UserInfoService {
         log.info("Getting user by username: {}", username);
         final var userEntity = findByUsernameInDB(username);
 
-        return userMapper.mapToDTO(userEntity, true);
+        return userMapper.mapToDTOExcludeSensitiveInfo(userEntity);
     }
     public UserDTO findByCif(final String cif) {
         log.info("Getting user by cif: {}", cif);

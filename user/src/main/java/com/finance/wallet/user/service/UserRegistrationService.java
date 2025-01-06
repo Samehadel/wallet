@@ -32,7 +32,7 @@ public class UserRegistrationService {
         userEntity = userRepository.save(userEntity);
         log.info("User registered successfully");
 
-        return userMapper.mapToDTO(userEntity, true);
+        return userMapper.mapToDTOExcludeSensitiveInfo(userEntity);
     }
 
     private void validateUserNotExists(final UserDTO userDTO) {
