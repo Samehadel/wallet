@@ -18,6 +18,8 @@
 		<java.version>17</java.version>
 		<spring.cloud.version>2023.0.0</spring.cloud.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
+		<commons-text.version>1.13.0</commons-text.version>
+		<java-jwt.version>4.2.1</java-jwt.version>
 	</properties>
 
 	<dependencyManagement>
@@ -85,7 +87,25 @@
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
-			<version>4.2.1</version>
+			<version>${java-jwt.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>${commons-text.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
