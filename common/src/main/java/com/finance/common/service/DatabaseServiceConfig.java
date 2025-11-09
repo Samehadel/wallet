@@ -18,7 +18,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
-@ConditionalOnProperty(value = "service.config.type", havingValue = "database")
+@ConditionalOnProperty(value = "service.config.source", havingValue = "database")
 @RequiredArgsConstructor
 public class DatabaseServiceConfig implements ServiceConfiguration {
     private final ExceptionService exceptionService;
@@ -72,7 +72,6 @@ public class DatabaseServiceConfig implements ServiceConfiguration {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private void cacheConfigurationIfEnabled(final String key, final String value) {
         if (serviceConfigCacheEnabled) {
             log.info("Caching configuration for Key: [{}]", key);
