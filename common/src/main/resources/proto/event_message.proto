@@ -6,12 +6,21 @@ import "google/protobuf/wrappers.proto";
 option java_package = "com.finance.common.event.schema.user";
 option java_multiple_files = true;
 
+message Event {
+  string event_id = 1;
+  EventTypes event_type = 2;
+  int64 timestamp = 3;
+
+  oneof payload {
+   UserStatusMessage user_status_message = 4;
+  }
+}
+
 message UserStatusMessage {
   int64 user_id = 1;
   UserStatus new_status = 2;
   string reason = 3;
   int64 new_status_time = 4;
-  EventTypes event_type = 5;
 }
 
 enum UserStatus {

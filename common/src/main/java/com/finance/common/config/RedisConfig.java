@@ -26,13 +26,13 @@ import lombok.extern.log4j.Log4j2;
  * @since 25/11/2024
  */
 @Configuration
-@ConditionalOnProperty(name = "application.cache.enabled", havingValue = "true")
 @Log4j2
 @RequiredArgsConstructor
 public class RedisConfig {
     private final ObjectMapper objectMapper;
 
     @Bean(name = "redissonClient", destroyMethod="shutdown")
+    @ConditionalOnProperty(name = "application.cache.enabled", havingValue = "true")
     @Profile("dev")
     public RedissonClient redissonDev(@Value("classpath:/redisson-dev.yaml") Resource devConfigFile) throws IOException {
         final var config = Config.fromYAML(devConfigFile.getInputStream());
@@ -44,6 +44,7 @@ public class RedisConfig {
     }
 
     @Bean(name = "redissonClient", destroyMethod = "shutdown")
+    @ConditionalOnProperty(name = "application.cache.enabled", havingValue = "true")
     @Profile({"uat", "prod"})
     public RedissonClient redissonProd(@Value("classpath:/redisson-prod.yaml") Resource productionConfigFile) throws IOException {
         final var config = Config.fromYAML(productionConfigFile.getInputStream());
