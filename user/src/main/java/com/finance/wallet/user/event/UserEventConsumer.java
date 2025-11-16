@@ -1,6 +1,7 @@
 package com.finance.wallet.user.event;
 
 import com.finance.common.constants.TopicsNames;
+import com.finance.common.event.schema.user.Event;
 import com.finance.common.event.schema.user.EventTypes;
 import com.finance.common.event.schema.user.UserStatusMessage;
 import com.finance.common.exception.ExceptionService;
@@ -22,11 +23,12 @@ public class UserEventConsumer {
     @KafkaListener(topics = TopicsNames.USER_STATUS_UPDATE_TOPIC)
     public void consumeUserEvent(final byte[] message) {
         try {
-            UserStatusMessage userStatusMessage = UserStatusMessage.parseFrom(message);
+            Event event = Event.parseFrom(message);
+            UserStatusMessage userStatusMessage = event.getUserStatusMessage();
 
-            if (userStatusMessage.getEventType() == EventTypes.FAILED_LOGIN_ATTEMPT) {
+            if (event.getEventType() == EventTypes.FAILED_LOGIN_ATTEMPT) {
                 userStateService.incrementFailedLoginTrials(userStatusMessage.getUserId());
-            } else if (userStatusMessage.getEventType() == EventTypes.SUCCESSFUL_LOGIN) {
+            } else if (event.getEventType() == EventTypes.SUCCESSFUL_LOGIN) {
                 userStateService.updateLastLoginDate(userStatusMessage.getUserId());
             }
 
