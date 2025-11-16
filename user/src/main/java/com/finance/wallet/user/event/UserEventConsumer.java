@@ -23,12 +23,11 @@ public class UserEventConsumer {
     @KafkaListener(topics = TopicsNames.USER_STATUS_UPDATE_TOPIC)
     public void consumeUserEvent(final byte[] message) {
         try {
-            Event event = Event.parseFrom(message);
-            UserStatusMessage userStatusMessage = event.getUserStatusMessage();
+            UserStatusMessage userStatusMessage = UserStatusMessage.parseFrom(message);
 
-            if (event.getEventType() == EventTypes.FAILED_LOGIN_ATTEMPT) {
+            if (userStatusMessage.getEventType() == EventTypes.FAILED_LOGIN_ATTEMPT) {
                 userStateService.incrementFailedLoginTrials(userStatusMessage.getUserId());
-            } else if (event.getEventType() == EventTypes.SUCCESSFUL_LOGIN) {
+            } else if (userStatusMessage.getEventType() == EventTypes.SUCCESSFUL_LOGIN) {
                 userStateService.updateLastLoginDate(userStatusMessage.getUserId());
             }
 
