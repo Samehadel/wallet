@@ -25,7 +25,7 @@ import org.springframework.util.backoff.FixedBackOff;
 
 @Configuration
 @ConditionalOnProperty(value = "event.enabled", havingValue = "true")
-public class EventConfig {
+public class KafkaConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;

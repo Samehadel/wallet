@@ -20,6 +20,7 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <spring-retry.version>2.0.10</spring-retry.version>
         <spring-aspects.version>6.2.0</spring-aspects.version>
+        <protobuf.version>3.25.1</protobuf.version>
     </properties>
 
     <dependencies>
@@ -49,6 +50,18 @@
             <version>${mapstruct.version}</version>
         </dependency>
 
+        <!-- Protocol Buffers -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${protobuf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java-util</artifactId>
+            <version>${protobuf.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -57,7 +70,7 @@
 
         <dependency>
             <groupId>org.redisson</groupId>
-            <artifactId>redisson</artifactId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
             <version>3.40.0</version>
         </dependency>
 
@@ -130,6 +143,61 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+            <!-- Protobuf Maven Plugin -->
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.6.1</version>
+                <configuration>
+                    <protocArtifact>
+                        com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
+                    </protocArtifact>
+                    <!-- Read from src/main/proto OR src/main/resources/proto -->
+                    <protoSourceRoot>${project.basedir}/src/main/resources/proto</protoSourceRoot>
+                    <!-- Output to target/generated-sources/protobuf/java -->
+                    <outputDirectory>${project.build.directory}/generated-sources/protobuf/java</outputDirectory>
+                    <clearOutputDirectory>false</clearOutputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Build Helper Plugin - Adds generated sources to classpath -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/protobuf/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
+        <extensions>
+            <!-- OS Maven Plugin for platform detection -->
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version>
+            </extension>
+        </extensions>
     </build>
 </project>

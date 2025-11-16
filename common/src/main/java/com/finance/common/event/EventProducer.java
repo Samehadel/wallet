@@ -1,9 +1,8 @@
 package com.finance.common.event;
 
-import com.google.protobuf.GeneratedMessageV3;
+
+import com.finance.common.event.schema.user.Event;
 
 public interface EventProducer {
-    void postEvent(String topic, byte[] event);
-
-    void postEvent(String topic, GeneratedMessageV3 event);
+    void postEvent(String topic, Event event);
 }
