@@ -8,15 +8,15 @@ import com.finance.common.exception.ExceptionService;
 import com.finance.common.exception.SharedApplicationError;
 import com.finance.wallet.user.service.UserStateService;
 import com.google.protobuf.InvalidProtocolBufferException;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
 @RequiredArgsConstructor
-public class UserEventConsumer {
+@Log4j2
+public class KafkaUserEventConsumer {
     private final UserStateService userStateService;
     private final ExceptionService exceptionService;
 
@@ -36,4 +36,5 @@ public class UserEventConsumer {
             throw exceptionService.buildBadExceptionWithReference(SharedApplicationError.GENERIC_ERROR);
         }
     }
+
 }
