@@ -6,7 +6,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 
 @EnableDiscoveryClient
-@SpringBootApplication(scanBasePackages = {"com.bank.customer", "com.bank.shared"})
+@SpringBootApplication(scanBasePackages = {"com.bank.customer", "com.finance.common"})
 public class CustomerApplication {
 
 	public static void main(String[] args) {

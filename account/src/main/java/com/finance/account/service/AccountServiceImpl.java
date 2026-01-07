@@ -1,10 +1,10 @@
 package com.finance.account.service;
 
 import com.finance.account.AccountRepository;
-import com.finance.common.client.CustomerServiceClient;
 import com.finance.account.configuration.AppConfig;
 import com.finance.account.entity.AccountEntity;
 import com.finance.account.mapper.AccountMapper;
+import com.finance.common.client.CustomerServiceClient;
 import com.finance.common.constants.EventsConstants;
 import com.finance.common.dto.AccountDTO;
 import com.finance.common.dto.CustomerDTO;
@@ -15,18 +15,15 @@ import com.finance.common.enums.NotificationTypeEnum;
 import com.finance.common.exception.ExceptionService;
 import com.finance.common.exception.SharedApplicationError;
 import com.finance.common.model.ApiResponse;
-import com.finance.common.util.ApiResponseBuilder;
 import com.finance.common.util.CollectionUtil;
 import com.finance.common.util.StringUtil;
-
-import java.util.Date;
-import java.util.Set;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import java.util.Date;
+import java.util.Set;
 
 @Log4j2
 @Service
@@ -42,14 +39,14 @@ public class AccountServiceImpl implements AccountService {
 	private final ExceptionService exceptionService;
 
 	@Override
-	public ApiResponse<AccountDTO> create(AccountDTO dto) {
+	public AccountDTO create(AccountDTO dto) {
 		try {
 			log.info("Starting create account for customer {}", dto.getCustomerCode());
 			validateAccountRequiredInfo(dto);
 			CustomerDTO customerDTO = findCustomerByCode(dto.getCustomerCode());
 			validateCustomer(customerDTO);
 			validateCustomerAccounts(dto);
-			ApiResponse<AccountDTO> response = createAccount(dto);
+			AccountDTO response = createAccount(dto);
 			pushNotification(dto, customerDTO);
 			return response;
 		} finally {
@@ -103,7 +100,7 @@ public class AccountServiceImpl implements AccountService {
 
 		if(!Boolean.TRUE.equals(customerDTO.getActive()) ||
 				Boolean.TRUE.equals(customerDTO.getBlocked())) {
-			//throw new IllegalOperationException("Customer is not active");
+			throw exceptionService.buildBadRequestException(SharedApplicationError.VALIDATION_ERROR, "customer not active");
 
 		}
 		validateCustomerOfficialIDs(customerDTO.getOfficialIDs());
@@ -112,10 +109,9 @@ public class AccountServiceImpl implements AccountService {
 	private CustomerDTO findCustomerByCode(String customerCode) {
 		ApiResponse<CustomerDTO> response = customerServiceClient.findCustomerByCode(customerCode);
 		if (null == response || null == response.getResponseBody()) {
-			throw new MissingRequiredFieldsException("Customer not found");
+			throw exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND);
 		}
-		CustomerDTO customerDTO = response.getResponseBody();
-		return customerDTO;
+        return response.getResponseBody();
 	}
 
 	private void validateCustomerAccounts(AccountDTO accountDTO) {
@@ -123,67 +119,67 @@ public class AccountServiceImpl implements AccountService {
 		String customerCode = accountDTO.getCustomerCode();
 		long customerNumberOfAccount = accountRepository.countByCustomerCode(customerCode, AccountStatusEnum.getPendingList());
 		if (customerNumberOfAccount >= appConfig.getMaxNumberAccounts()) {
-			throw new IllegalOperationException("Customer reached the maximum number of accounts");
+			throw exceptionService.buildBadRequestException(SharedApplicationError.VALIDATION_ERROR, "Customer reached the maximum number of accounts");
 		}
 		long customerExistingAccountWithSameType = accountRepository.countByCustomerCodeAndAccountType(customerCode, accountDTO.getAccountType(), AccountStatusEnum.PENDING_APPROVAL);
 		if (customerExistingAccountWithSameType > 0) {
-			throw new IllegalOperationException("Customer already has an account with the same type");
+			throw exceptionService.buildBadRequestException(SharedApplicationError.VALIDATION_ERROR, "Customer already has an account with the same type");
+
 		}
 	}
 
 	private void validateCustomerOfficialIDs(Set<OfficialIdDTO> officialIDs) {
 		log.info("Starting Validating customer official IDs");
 		if (CollectionUtil.isNullOrEmpty(officialIDs)) {
-			throw new IllegalOperationException("At least one official ID is required");
+			throw exceptionService.buildBadRequestException(SharedApplicationError.MISSING_REQUIRED_FIELD, "Official ID(s)");
 		}
 		for (OfficialIdDTO officialIdDTO : officialIDs) {
 			if (StringUtil.isNullOrEmpty(officialIdDTO.getValue())) {
-				throw new IllegalOperationException("Official ID number is required");
+				throw exceptionService.buildBadRequestException(SharedApplicationError.MISSING_REQUIRED_FIELD, "Official ID number");
 			}
 			if (null == officialIdDTO.getType()) {
-				throw new IllegalOperationException("Official ID type is required");
+				throw exceptionService.buildBadRequestException(SharedApplicationError.MISSING_REQUIRED_FIELD, "Official ID type is required");
 			}
 			if (null == officialIdDTO.getExpiryDate()) {
-				throw new IllegalOperationException("Official ID expiry date is required");
+				throw exceptionService.buildBadRequestException(SharedApplicationError.MISSING_REQUIRED_FIELD, "Official ID expiry date");
 			}
 			Date today = new Date();
 			if (officialIdDTO.getExpiryDate().before(today)) {
-				throw new InvalidDataException("Official ID is expired");
+				throw exceptionService.buildBadRequestException(SharedApplicationError.VALIDATION_ERROR, "Official ID is expired");
 			}
 		}
 	}
 
-	private ApiResponse<AccountDTO> createAccount(AccountDTO dto) {
+	private AccountDTO createAccount(AccountDTO dto) {
 		log.info("Starting create account {}", dto);
 		AccountEntity entity = accountMapper.mapToEntity(dto);
 		entity.setAccountStatus(AccountStatusEnum.PENDING_APPROVAL);
 		entity = accountRepository.save(entity);
-		dto = accountMapper.mapToDTO(entity);
-		return ApiResponseBuilder.buildSuccessResponse(dto);
+		return accountMapper.mapToDTO(entity);
 	}
 
 	@Override
-	public ApiResponse<AccountDTO> get(final String code) {
+	public AccountDTO get(final String code) {
 		try {
 			log.info("Starting get accounts {}", code);
 			if(StringUtil.isNullOrEmpty(code)) {
-				throw new MissingRequiredFieldsException("Customer code is required");
+				throw exceptionService.buildBadRequestException(SharedApplicationError.MISSING_REQUIRED_FIELD, "account code");
+
 			}
 			AccountEntity accountEntity = accountRepository.findByCode(code)
-				.orElseThrow(() -> new DataNotFoundException("Account not found"));
-			AccountDTO accountDTO = accountMapper.mapToDTO(accountEntity);
-			return ApiResponseBuilder.buildSuccessResponse(accountDTO);
+				.orElseThrow(() -> exceptionService.buildBadRequestException(SharedApplicationError.RESOURCE_NOT_FOUND, "Account", "code", code));
+            return accountMapper.mapToDTO(accountEntity);
 		} finally {
 			log.info("Finished get account {}", code);
 		}
 	}
 
 	@Override
-	public ApiResponse<Void> block(final String accountNumber) {
+	public void block(final String accountNumber) {
 		try {
 			log.info("Starting block account for accountNumber {}", accountNumber);
 			if(StringUtil.isNullOrEmpty(accountNumber)) {
-				throw new MissingRequiredFieldsException("Customer accountNumber is required");
+				throw exceptionService.buildBadRequestException(SharedApplicationError.MISSING_REQUIRED_FIELD, "accountNumber");
 			}
 
 			AccountEntity accountEntity = accountRepository.findByAccountNumber(accountNumber);
@@ -192,7 +188,6 @@ public class AccountServiceImpl implements AccountService {
 			accountEntity.setActive(Boolean.FALSE);
 
 			accountRepository.save(accountEntity);
-			return ApiResponseBuilder.buildSuccessResponse();
 		} finally {
 			log.info("Finished block account for accountNumber {}", accountNumber);
 		}

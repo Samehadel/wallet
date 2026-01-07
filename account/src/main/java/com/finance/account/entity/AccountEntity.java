@@ -1,18 +1,21 @@
 package com.finance.account.entity;
 
-import com.finance.common.persistence.AuditableEntity;
 import com.finance.common.enums.AccountStatusEnum;
 import com.finance.common.enums.AccountTypeEnum;
+import com.finance.common.persistence.entity.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 
 
+@EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "ACCOUNT")
+@Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @EntityListeners(AccountEntityListener.class)
 public class AccountEntity extends AuditableEntity {
 
@@ -51,80 +54,9 @@ public class AccountEntity extends AuditableEntity {
 	@Column(name = "MONTHLY_LIMIT", nullable = false)
 	private BigDecimal monthlyLimit;
 
+	@Column(name = "BLOCKED")
+	private Boolean blocked;
 
-	public AccountEntity() {
-
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getCustomerCode() {
-		return customerCode;
-	}
-
-	public void setCustomerCode(String customerCode) {
-		this.customerCode = customerCode;
-	}
-
-	public String getAccountNumber() {
-		return accountNumber;
-	}
-
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
-	}
-
-	public String getAccountHolderName() {
-		return accountHolderName;
-	}
-
-	public void setAccountHolderName(String accountHolderName) {
-		this.accountHolderName = accountHolderName;
-	}
-
-	public AccountTypeEnum getAccountType() {
-		return accountType;
-	}
-
-	public void setAccountType(AccountTypeEnum accountType) {
-		this.accountType = accountType;
-	}
-
-	public AccountStatusEnum getAccountStatus() {
-		return accountStatus;
-	}
-
-	public void setAccountStatus(AccountStatusEnum accountStatus) {
-		this.accountStatus = accountStatus;
-	}
-
-	public BigDecimal getBalance() {
-		return balance;
-	}
-
-	public void setBalance(BigDecimal balance) {
-		this.balance = balance;
-	}
-
-	public BigDecimal getDailyLimit() {
-		return dailyLimit;
-	}
-
-	public void setDailyLimit(BigDecimal dailyLimit) {
-		this.dailyLimit = dailyLimit;
-	}
-
-	public BigDecimal getMonthlyLimit() {
-		return monthlyLimit;
-	}
-
-	public void setMonthlyLimit(BigDecimal monthlyLimit) {
-		this.monthlyLimit = monthlyLimit;
-	}
+	@Column(name = "ACTIVE")
+	private Boolean active;
 }

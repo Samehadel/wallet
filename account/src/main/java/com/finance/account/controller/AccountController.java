@@ -16,7 +16,7 @@ public class AccountController extends BaseController<AccountDTO> {
 	private AccountService accountService;
 
 	@Override
-	protected BaseService getService() {
+	protected BaseService<AccountDTO> getService() {
 		return accountService;
 	}
 }

@@ -1,9 +1,10 @@
 package com.bank.customer.entity;
 
-import com.finance.common.persistence.ActiveEntity;
+import com.finance.common.persistence.entity.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
@@ -12,11 +13,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "CUSTOMER")
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(CustomerEntityListener.class)
-public class CustomerEntity extends ActiveEntity {
+public class CustomerEntity extends AuditableEntity {
 
 	@Id
 	@Column(name = "CUSTOMER_ID")
@@ -46,69 +48,11 @@ public class CustomerEntity extends ActiveEntity {
 	@JoinColumn(name = "CUSTOMER_ID")
 	private Set<OfficialIdEntity> officialIDs;
 
-	public Long getCustomerId() {
-		return customerId;
-	}
+	@Column(name = "BLOCKED")
+	private Boolean blocked;
 
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
-	}
-
-	public String getCustomerCode() {
-		return customerCode;
-	}
-
-	public void setCustomerCode(String customerCode) {
-		this.customerCode = customerCode;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
-	public AddressComponent getAddressComponent() {
-		return addressComponent;
-	}
-
-	public void setAddressComponent(AddressComponent addressComponent) {
-		this.addressComponent = addressComponent;
-	}
-
-	public Set<OfficialIdEntity> getOfficialIDs() {
-		return officialIDs;
-	}
-
-	public void setOfficialIDs(Set<OfficialIdEntity> officialIDs) {
-		this.officialIDs = officialIDs;
-	}
+	@Column(name = "ACTIVE")
+	private Boolean active;
 
 	public void addOfficialId(OfficialIdEntity officialId) {
 		if(officialIDs == null) {

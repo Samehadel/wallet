@@ -6,8 +6,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableDiscoveryClient
-@EnableFeignClients
-@SpringBootApplication
+@EnableFeignClients(basePackages = {"com.finance.common.client"})
+@SpringBootApplication(scanBasePackages = {"com.finance.account", "com.finance.common"})
 public class AccountApplication {
 
 	public static void main(String[] args) {
