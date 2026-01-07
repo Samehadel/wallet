@@ -26,20 +26,4 @@ public class CustomerController extends BaseController<CustomerDTO> {
 	protected BaseService getService() {
 		return customerService;
 	}
-
-	@GetMapping("/test/e1")
-	public ApiResponse<Void> testE1() {
-		exceptionService.throwBadRequestException(SharedApplicationError.MISSING_REQUIRED_FIELD, "Test Field");
-
-		return null;
-	}
-
-	@GetMapping("/test/e2")
-	public ApiResponse<Void> testE2() {
-
-		exceptionService.throwLogicalException(SharedApplicationError.MISSING_REQUIRED_FIELD, "Test Field");
-
-		return null;
-	}
-
 }
