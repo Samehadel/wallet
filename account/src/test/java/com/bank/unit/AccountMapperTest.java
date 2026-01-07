@@ -1,7 +1,7 @@
 package com.bank.unit;
 
-import com.bank.account.entity.AccountEntity;
-import com.bank.account.mapper.AccountMapper;
+import com.finance.account.entity.AccountEntity;
+import com.finance.account.mapper.AccountMapper;
 import com.finance.common.dto.AccountDTO;
 import com.finance.common.enums.AccountStatusEnum;
 import com.finance.common.enums.AccountTypeEnum;

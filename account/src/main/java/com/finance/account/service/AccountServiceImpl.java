@@ -1,10 +1,10 @@
-package com.bank.account.service;
+package com.finance.account.service;
 
-import com.bank.account.AccountRepository;
-import com.bank.account.clients.CustomerServiceClient;
-import com.bank.account.configuration.AppConfig;
-import com.bank.account.entity.AccountEntity;
-import com.bank.account.mapper.AccountMapper;
+import com.finance.account.AccountRepository;
+import com.finance.common.client.CustomerServiceClient;
+import com.finance.account.configuration.AppConfig;
+import com.finance.account.entity.AccountEntity;
+import com.finance.account.mapper.AccountMapper;
 import com.finance.common.constants.EventsConstants;
 import com.finance.common.dto.AccountDTO;
 import com.finance.common.dto.CustomerDTO;
@@ -12,6 +12,8 @@ import com.finance.common.dto.NotificationDTO;
 import com.finance.common.dto.OfficialIdDTO;
 import com.finance.common.enums.AccountStatusEnum;
 import com.finance.common.enums.NotificationTypeEnum;
+import com.finance.common.exception.ExceptionService;
+import com.finance.common.exception.SharedApplicationError;
 import com.finance.common.model.ApiResponse;
 import com.finance.common.util.ApiResponseBuilder;
 import com.finance.common.util.CollectionUtil;
@@ -37,6 +39,7 @@ public class AccountServiceImpl implements AccountService {
 	private final AccountRepository accountRepository;
 	private final CustomerServiceClient customerServiceClient;
 	private final KafkaTemplate<String, NotificationDTO> kafkaTemplate;
+	private final ExceptionService exceptionService;
 
 	@Override
 	public ApiResponse<AccountDTO> create(AccountDTO dto) {
@@ -88,10 +91,10 @@ public class AccountServiceImpl implements AccountService {
 	private void validateAccountRequiredInfo(AccountDTO dto) {
 		log.info("Starting validate account required info {}", dto);
 		if (StringUtil.isNullOrEmpty(dto.getCustomerCode())) {
-			throw new MissingRequiredFieldsException("Customer code is required");
+			throw exceptionService.buildBadRequestException(SharedApplicationError.MISSING_REQUIRED_FIELD, "customerCode");
 		}
 		if (null == dto.getAccountType()) {
-			throw new MissingRequiredFieldsException("Account type is required");
+			throw exceptionService.buildBadRequestException(SharedApplicationError.MISSING_REQUIRED_FIELD, "accountType");
 		}
 	}
 
@@ -100,13 +103,14 @@ public class AccountServiceImpl implements AccountService {
 
 		if(!Boolean.TRUE.equals(customerDTO.getActive()) ||
 				Boolean.TRUE.equals(customerDTO.getBlocked())) {
-			throw new IllegalOperationException("Customer is not active");
+			//throw new IllegalOperationException("Customer is not active");
+
 		}
 		validateCustomerOfficialIDs(customerDTO.getOfficialIDs());
 	}
 
 	private CustomerDTO findCustomerByCode(String customerCode) {
-		ApiResponse<CustomerDTO> response = customerServiceClient.get(customerCode);
+		ApiResponse<CustomerDTO> response = customerServiceClient.findCustomerByCode(customerCode);
 		if (null == response || null == response.getResponseBody()) {
 			throw new MissingRequiredFieldsException("Customer not found");
 		}

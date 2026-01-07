@@ -1,4 +1,4 @@
-package com.bank.account.service;
+package com.finance.account.service;
 
 import com.finance.common.dto.AccountDTO;
 import com.finance.common.service.BaseService;

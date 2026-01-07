@@ -1,6 +1,6 @@
-package com.bank.account.controller;
+package com.finance.account.controller;
 
-import com.bank.account.service.AccountService;
+import com.finance.account.service.AccountService;
 import com.finance.common.controller.BaseController;
 import com.finance.common.dto.AccountDTO;
 import com.finance.common.service.BaseService;

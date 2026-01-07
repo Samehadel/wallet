@@ -1,6 +1,6 @@
-package com.bank.account.mapper;
+package com.finance.account.mapper;
 
-import com.bank.account.entity.AccountEntity;
+import com.finance.account.entity.AccountEntity;
 import com.finance.common.dto.AccountDTO;
 import com.finance.common.mapper.GlobalMapper;
 

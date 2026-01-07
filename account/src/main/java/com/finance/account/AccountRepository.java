@@ -1,6 +1,6 @@
-package com.bank.account;
+package com.finance.account;
 
-import com.bank.account.entity.AccountEntity;
+import com.finance.account.entity.AccountEntity;
 import com.finance.common.enums.AccountStatusEnum;
 import com.finance.common.enums.AccountTypeEnum;
 import org.springframework.data.jpa.repository.JpaRepository;

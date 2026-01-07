@@ -1,4 +1,4 @@
-package com.bank.account.entity;
+package com.finance.account.entity;
 
 import com.finance.common.persistence.AuditableEntity;
 import com.finance.common.enums.AccountStatusEnum;

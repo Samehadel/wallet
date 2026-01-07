@@ -1,6 +1,6 @@
 package com.bank.util;
 
-import com.bank.account.entity.AccountEntity;
+import com.finance.account.entity.AccountEntity;
 import com.finance.common.dto.AccountDTO;
 import com.finance.common.dto.CustomerDTO;
 import com.finance.common.dto.OfficialIdDTO;

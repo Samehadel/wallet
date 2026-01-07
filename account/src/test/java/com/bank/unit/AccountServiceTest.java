@@ -1,10 +1,10 @@
 package com.bank.unit;
 
-import com.bank.account.AccountRepository;
+import com.finance.account.AccountRepository;
 import com.bank.account.clients.CustomerServiceClient;
-import com.bank.account.configuration.AppConfig;
-import com.bank.account.entity.AccountEntity;
-import com.bank.account.service.AccountServiceImpl;
+import com.finance.account.configuration.AppConfig;
+import com.finance.account.entity.AccountEntity;
+import com.finance.account.service.AccountServiceImpl;
 import com.finance.common.dto.AccountDTO;
 import com.finance.common.dto.CustomerDTO;
 import com.bank.shared.exceptions.IllegalOperationException;

@@ -1,4 +1,4 @@
-package com.bank.account.configuration;
+package com.finance.account.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

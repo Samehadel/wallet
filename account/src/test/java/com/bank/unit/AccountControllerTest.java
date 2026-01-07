@@ -1,7 +1,7 @@
 package com.bank.unit;
 
-import com.bank.account.controller.AccountController;
-import com.bank.account.service.AccountService;
+import com.finance.account.controller.AccountController;
+import com.finance.account.service.AccountService;
 import com.finance.common.dto.AccountDTO;
 import com.finance.common.model.ApiResponse;
 import com.finance.common.model.StatusEnum;
