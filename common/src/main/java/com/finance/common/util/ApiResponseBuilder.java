@@ -21,12 +21,8 @@ public final class ApiResponseBuilder {
 		return buildApiResponse(StatusEnum.SUCCESS, null, null);
 	}
 
-	public static <R> ResponseEntity<ApiResponse<R>> buildSuccessResponse(R data) {
-		ApiResponse<R> apiResponse = buildApiResponse(StatusEnum.SUCCESS, null, data);
-
-		return ResponseEntity
-			.ok()
-			.body(apiResponse);
+	public static <R> ApiResponse<R> buildSuccessResponse(R data) {
+		return buildApiResponse(StatusEnum.SUCCESS, null, data);
 	}
 
 	public static <R> ResponseEntity<ApiResponse<R>> buildFailedResponse(final ApplicationException applicationException) {
