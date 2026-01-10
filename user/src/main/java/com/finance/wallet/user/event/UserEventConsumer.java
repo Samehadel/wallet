@@ -1,38 +1,34 @@
 package com.finance.wallet.user.event;
 
-import com.finance.common.constants.TopicsNames;
+import com.finance.common.event.EventProducer;
 import com.finance.common.event.schema.user.Event;
-import com.finance.common.event.schema.user.EventTypes;
-import com.finance.common.event.schema.user.UserStatusMessage;
-import com.finance.common.exception.ExceptionService;
-import com.finance.common.exception.SharedApplicationError;
-import com.finance.wallet.user.service.UserStateService;
-import com.google.protobuf.InvalidProtocolBufferException;
-
-import org.springframework.kafka.annotation.KafkaListener;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
-public class UserEventConsumer {
-    private final UserStateService userStateService;
-    private final ExceptionService exceptionService;
+@Log4j2
+public class UserEventConsumer implements EventProducer {
+    private final KafkaTemplate<String, byte[]> template;
 
-    @KafkaListener(topics = TopicsNames.USER_STATUS_UPDATE_TOPIC)
-    public void consumeUserEvent(final byte[] message) {
-        try {
-            UserStatusMessage userStatusMessage = UserStatusMessage.parseFrom(message);
 
-            if (userStatusMessage.getEventType() == EventTypes.FAILED_LOGIN_ATTEMPT) {
-                userStateService.incrementFailedLoginTrials(userStatusMessage.getUserId());
-            } else if (userStatusMessage.getEventType() == EventTypes.SUCCESSFUL_LOGIN) {
-                userStateService.updateLastLoginDate(userStatusMessage.getUserId());
+    @Override
+    public void postEvent(final String topic, final Event event) {
+        CompletableFuture<SendResult<String, byte[]>> future = this.template.send(topic, event.toByteArray()).toCompletableFuture();
+        future.whenComplete((result, ex) -> {
+            if (Objects.isNull(ex)) {
+                RecordMetadata metadata = result.getRecordMetadata();
+                log.info("Message sent successfully to topic: {}, partition: {}, offset: {}", new Object[]{metadata.topic(), metadata.partition(), metadata.offset()});
+            } else {
+                log.error("Failed to send message to topic: {}, error: {}", topic, ex.getMessage());
             }
-
-        } catch (InvalidProtocolBufferException e) {
-            throw exceptionService.buildBadExceptionWithReference(SharedApplicationError.GENERIC_ERROR);
-        }
+        });
     }
 }
