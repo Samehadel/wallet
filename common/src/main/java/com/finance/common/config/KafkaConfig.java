@@ -1,8 +1,5 @@
 package com.finance.common.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
@@ -14,6 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -23,8 +21,12 @@ import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.util.backoff.FixedBackOff;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
-@ConditionalOnProperty(value = "event.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "event.message.broker", havingValue = "kafka")
+@EnableKafka
 public class KafkaConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")

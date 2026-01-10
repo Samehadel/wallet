@@ -3,14 +3,12 @@ package com.finance.common.dto;
 import com.finance.common.enums.AccountStatusEnum;
 import com.finance.common.enums.AccountTypeEnum;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
