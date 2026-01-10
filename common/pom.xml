@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>com.finance</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>finance-parent</artifactId>
         <version>1.0</version>
         <relativePath/>
     </parent>
@@ -21,6 +21,7 @@
         <spring-retry.version>2.0.10</spring-retry.version>
         <spring-aspects.version>6.2.0</spring-aspects.version>
         <protobuf.version>3.25.1</protobuf.version>
+        <lombok.version>1.18.34</lombok.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
@@ -56,6 +63,7 @@
             <artifactId>protobuf-java</artifactId>
             <version>${protobuf.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java-util</artifactId>
@@ -74,11 +82,6 @@
             <version>3.40.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <version>3.24.1</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.kafka</groupId>
@@ -98,12 +101,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
