@@ -39,9 +39,6 @@ public class UserEntity extends AuditableEntity {
     @Column(name = "USERNAME", nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(name = "CIF", nullable = false, length = 20, unique = true)
-    private String cif;
-
     @Column(name = "MOBILE", nullable = false, unique = true, length = 15)
     private String mobile;
 

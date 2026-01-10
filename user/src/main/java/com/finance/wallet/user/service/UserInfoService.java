@@ -64,19 +64,6 @@ public class UserInfoService {
 
         return userMapper.mapToDTOExcludeSensitiveInfo(userEntity);
     }
-    public UserDTO findByCif(final String cif) {
-        log.info("Getting user by cif: {}", cif);
-
-        requestInfoValidator.validateByCif(cif);
-        final var userEntity = findByCifInDB(cif);
-
-        return mapToUserDTO(userEntity);
-    }
-
-    private UserEntity findByCifInDB(final String cif) {
-        return userRepository.findByCif(cif)
-            .orElseThrow(this::getUserNotFoundException);
-    }
 
     private BadRequestException getUserNotFoundException() {
         return exceptionService.buildBadRequestException(SharedApplicationError.USER_NOT_FOUND);

@@ -45,7 +45,6 @@ public class UserTokenHolder {
     public UserDTO buildUserFromToken() {
         return UserDTO.builder()
             .id(userToken.getUserId())
-            .cif(userToken.getCif())
             .username(userToken.getUsername())
             .build();
     }

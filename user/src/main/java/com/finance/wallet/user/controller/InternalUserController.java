@@ -25,9 +25,4 @@ public class InternalUserController {
     public UserDTO getUserByMobile(@PathVariable("mobile") final String mobile) {
         return userInfoService.findByMobile(mobile);
     }
-
-    @GetMapping("/cif/{cif}")
-    public UserDTO getUserByCif(@PathVariable("cif") final String cif) {
-        return userInfoService.findByCif(cif);
-    }
 }

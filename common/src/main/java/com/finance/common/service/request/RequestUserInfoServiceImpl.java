@@ -5,9 +5,7 @@ import com.finance.common.constants.CommonHeaders;
 import com.finance.common.constants.RequestSource;
 import com.finance.common.dto.UserDTO;
 import com.finance.common.util.StringUtil;
-
 import jakarta.servlet.http.HttpServletRequest;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -58,12 +56,5 @@ public class RequestUserInfoServiceImpl implements RequestUserInfoService {
         UserDTO requestUser = getRequestUser();
 
         return requestUser != null ? requestUser.getMobile() : null;
-    }
-
-    @Override
-    public String getRequestCif() {
-        UserDTO requestUser = getRequestUser();
-
-        return requestUser != null ? requestUser.getCif() : null;
     }
 }

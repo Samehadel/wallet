@@ -46,7 +46,6 @@ public class UserTokenService {
         UserToken userToken = UserToken.builder()
             .token(tokenService.generateToken(user.getUsername()))
             .userId(user.getId())
-            .cif(user.getCif())
             .username(user.getUsername())
             .lastAccessTime(LocalDateTime.now())
             .expirationTime(LocalDateTime.now().plusSeconds(jwtExpirationSec))
@@ -59,7 +58,7 @@ public class UserTokenService {
     }
 
     private void validateRequiredFields(final UserDTO user) {
-        if (ObjectUtils.anyNull(user.getUsername(), user.getId(), user.getCif())) {
+        if (ObjectUtils.anyNull(user.getUsername(), user.getId())) {
             throw exceptionService.buildInternalException(SharedApplicationError.MISSING_REQUIRED_FIELD);
         }
     }

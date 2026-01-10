@@ -11,6 +11,4 @@ public interface RequestUserInfoService {
     String getRequestUsername();
 
     String getRequestMobile();
-
-    String getRequestCif();
 }

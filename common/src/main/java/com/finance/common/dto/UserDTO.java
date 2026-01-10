@@ -37,9 +37,6 @@ public class UserDTO extends BaseDTO {
     @NotEmpty
     private String username;
 
-    @Null(groups = {RestGroups.Create.class, RestGroups.Update.class})
-    private String cif;
-
     @NotEmpty(groups = {RestGroups.Create.class, RestGroups.Update.class})
     private String mobile;
 
